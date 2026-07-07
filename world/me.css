@@ -1,4 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@500&family=Share+Tech+Mono&family=VT323&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@500&display=swap");
+
+@font-face {
+  font-family: "VT323";
+  src: url("../static/VT323.woff2") format("woff2");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Share Tech Mono";
+  src: url("../static/ShareTechMono.woff2") format("woff2");
+  font-display: swap;
+}
 
 :root {
   --main-bg: #0a0a0a;
