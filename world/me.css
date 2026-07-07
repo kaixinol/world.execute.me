@@ -26,7 +26,7 @@ html {
   color: var(--text-color);
   font-family: var(--font-main);
   overflow: hidden;
-  text-shadow: 0 0 5px var(--text-color), 0 0 10px var(--text-color);
+  text-shadow: 0 0 3px var(--text-color), 0 0 6px var(--text-color);
 }
 
 #container {
