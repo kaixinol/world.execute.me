@@ -811,8 +811,6 @@ function showIsolation() {
 function showBSOD() {
   const bsod = document.createElement("div");
   bsod.id = "bsod-screen";
-  let dump = "Dumping physical memory to disk: ";
-  for (let i = 0; i < 10; i++) dump += Math.floor(Math.random() * 10);
 
   bsod.innerHTML = `
                 <div class="bsod-text">
@@ -824,9 +822,22 @@ function showBSOD() {
                     <br>
                     <p>Technical Information:</p>
                     <p>*** STOP: 0xDEADBEEF (0x30783134, 0x352e7072, 0x74732e73, 0x70616365)</p>
-                    <p class="bsod-dump">${dump}</p>
+                    <p class="bsod-dump">Dumping physical memory to disk: <span id="dump-counter">0</span> KB</p>
                 </div>`;
   container.appendChild(bsod);
+
+  const counter = document.getElementById("dump-counter");
+  const targetSize = Math.floor(Math.random() * 9000000 + 1000000);
+  const increment = Math.floor(Math.random() * 50000 + 10000);
+  let current = 0;
+  const dumpInterval = setInterval(() => {
+    current += increment;
+    if (current >= targetSize) {
+      current = targetSize;
+      clearInterval(dumpInterval);
+    }
+    counter.textContent = current.toLocaleString();
+  }, Math.random() * 2000 + 3000);
 }
 function hideBSOD() {
   const bsod = document.getElementById("bsod-screen");
