@@ -386,10 +386,12 @@ overlay.addEventListener("click", startExperience, { once: true });
 
 // --- Visual Functions ---
 function typeLine({ text, className = "", style = {}, onComplete = null }) {
+  visuals.querySelectorAll(".cursor").forEach((c) => c.remove());
+
   const line = document.createElement("div");
   line.className = `line ${className}`;
   Object.assign(line.style, style);
-  line.innerHTML = `<span class="prompt"># </span><span class="text"></span><span class="cursor"></span>`;
+  line.innerHTML = `<span class="prompt"># </span><span class="text"><span class="cursor">█</span></span>`;
   visuals.appendChild(line);
 
   const textSpan = line.querySelector(".text");
@@ -397,12 +399,11 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   let i = 0;
   const typingInterval = setInterval(() => {
     if (i < text.length) {
-      textSpan.textContent += text.charAt(i);
+      textSpan.insertBefore(document.createTextNode(text.charAt(i)), cursor);
       i++;
       visuals.scrollTop = visuals.scrollHeight;
     } else {
       clearInterval(typingInterval);
-      cursor.remove();
       if (onComplete) onComplete();
     }
   }, 60);

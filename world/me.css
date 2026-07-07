@@ -124,14 +124,6 @@ html {
 .line > .prompt {
   opacity: 0.6;
 }
-.cursor {
-  display: inline-block;
-  background-color: var(--text-color);
-  width: 0.6em;
-  height: 1.2em;
-  vertical-align: middle;
-  animation: blink 1s step-end infinite;
-}
 
 .emphasis {
   font-family: var(--font-display);
