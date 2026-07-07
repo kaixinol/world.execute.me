@@ -389,7 +389,7 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   const line = document.createElement("div");
   line.className = `line ${className}`;
   Object.assign(line.style, style);
-  line.innerHTML = `<span class="prompt">C:\\> </span><span class="text"></span><span class="cursor"></span>`;
+  line.innerHTML = `<span class="prompt"># </span><span class="text"></span><span class="cursor"></span>`;
   visuals.appendChild(line);
 
   const textSpan = line.querySelector(".text");
