@@ -693,6 +693,7 @@ function showCodeSnippet() {
       particle.style.left = `${Math.random() * 100}%`;
       particle.style.top = "100%";
       container.appendChild(particle);
+      setTimeout(() => particle.remove(), 3000);
     }, i * 100);
   }
 }
@@ -888,11 +889,15 @@ function showTrappedInLove() {
 } <span class="love-cursor">❤</span>`;
 
   const cursor = el.querySelector(".love-cursor");
-  setInterval(() => {
+  const blinkInterval = setInterval(() => {
     cursor.style.opacity = cursor.style.opacity === "0" ? "1" : "0";
   }, 500);
 
   visuals.appendChild(el);
+  setTimeout(() => {
+    clearInterval(blinkInterval);
+    el.remove();
+  }, 15000);
 }
 
 function finalExecution() {
