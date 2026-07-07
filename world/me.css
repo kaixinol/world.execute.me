@@ -105,8 +105,14 @@ html {
 }
 #overlay-cursor {
   animation: blink 1s step-end infinite;
+  text-shadow: none;
 }
-
+.cursor {
+  text-shadow: none;
+}
+.blink {
+  animation: blink 1s step-end .5s infinite;
+}
 #visuals {
   position: relative;
   z-index: 10;
@@ -149,10 +155,10 @@ html {
 @keyframes blink {
   from,
   to {
-    background-color: transparent;
+    opacity: 1;
   }
   50% {
-    background-color: var(--text-color);
+    opacity: 0;
   }
 }
 @keyframes fadeIn {

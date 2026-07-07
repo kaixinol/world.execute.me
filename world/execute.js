@@ -391,7 +391,7 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   const line = document.createElement("div");
   line.className = `line ${className}`;
   Object.assign(line.style, style);
-  line.innerHTML = `<span class="prompt"># </span><span class="text"><span class="cursor">█</span></span>`;
+  line.innerHTML = `<span class="prompt">world# </span><span class="text"><span class="cursor">█</span></span>`;
   visuals.appendChild(line);
 
   const textSpan = line.querySelector(".text");
@@ -404,6 +404,10 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
       visuals.scrollTop = visuals.scrollHeight;
     } else {
       clearInterval(typingInterval);
+      cursor.remove();
+      textSpan.appendChild(document.createElement("span")).className = "cursor";
+      textSpan.querySelector(".cursor").textContent = "█";
+      textSpan.querySelector(".cursor").classList.add("blink");
       if (onComplete) onComplete();
     }
   }, 60);
@@ -904,7 +908,7 @@ function finalExecution() {
   const final = document.createElement("div");
   final.id = "overlay";
   final.innerHTML =
-    '<span>[execution@prts.space]$ <span id="overlay-cursor">_</span></span>';
+    '<span>[execution@prts.space]$ <span id="overlay-cursor">█</span></span>';
   document.body.appendChild(final);
 }
 
