@@ -3,6 +3,8 @@ const overlay = document.getElementById("overlay");
 const visuals = document.getElementById("visuals");
 const container = document.getElementById("container");
 
+const activeTypingIntervals = new Set();
+
 const timeline = [
   {
     time: 0.1,
@@ -395,6 +397,8 @@ overlay.addEventListener("click", startExperience, { once: true });
 
 // --- Visual Functions ---
 function typeLine({ text, className = "", style = {}, onComplete = null }) {
+  activeTypingIntervals.forEach((id) => clearInterval(id));
+  activeTypingIntervals.clear();
   visuals.querySelectorAll(".cursor").forEach((c) => c.remove());
 
   const line = document.createElement("div");
@@ -413,10 +417,12 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
       visuals.scrollTop = visuals.scrollHeight;
     } else {
       clearInterval(typingInterval);
+      activeTypingIntervals.delete(typingInterval);
       cursor.classList.add("blink");
       if (onComplete) onComplete();
     }
   }, 60);
+  activeTypingIntervals.add(typingInterval);
 }
 
 function showEmphasis({ text, className = "", onComplete = null }) {
@@ -429,6 +435,8 @@ function showEmphasis({ text, className = "", onComplete = null }) {
 }
 
 function clearScreen() {
+  activeTypingIntervals.forEach((id) => clearInterval(id));
+  activeTypingIntervals.clear();
   visuals.innerHTML = "";
 }
 function clearShapes() {
