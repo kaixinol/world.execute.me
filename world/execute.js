@@ -404,10 +404,7 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
       visuals.scrollTop = visuals.scrollHeight;
     } else {
       clearInterval(typingInterval);
-      cursor.remove();
-      textSpan.appendChild(document.createElement("span")).className = "cursor";
-      textSpan.querySelector(".cursor").textContent = "█";
-      textSpan.querySelector(".cursor").classList.add("blink");
+      cursor.classList.add("blink");
       if (onComplete) onComplete();
     }
   }, 60);
