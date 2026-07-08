@@ -352,6 +352,15 @@ let currentIndex = 0;
 let animationFrameId;
 
 function startExperience() {
+  const params = new URLSearchParams(window.location.search);
+  const jumpTime = parseFloat(params.get("jump"));
+
+  if (jumpTime) {
+    song.currentTime = jumpTime;
+    currentIndex = timeline.findIndex((e) => e.time >= jumpTime);
+    if (currentIndex === -1) currentIndex = timeline.length;
+  }
+
   overlay.classList.add("hidden");
   song.volume = 0.3;
   song
