@@ -347,13 +347,36 @@ html {
   color: var(--bsod-text);
   font-family: "IBM VGA", "Lucida Console", monospace;
   text-shadow: none;
-  padding: 2em;
+  padding: 1em;
   z-index: 50;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  #bsod-screen {
+    justify-content: center;
+    align-items: center;
+  }
 }
 .bsod-text {
-  font-size: 1.9em;
+  font-size: clamp(0.6em, 1.8vw, 1.9em);
   text-align: left;
-  line-height: 1.2;
+  line-height: 1.1;
+  max-width: 95vw;
+  max-height: 95vh;
+  overflow: hidden;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .bsod-text {
+    text-align: center;
+  }
 }
 .bsod-dump {
   margin-top: 2em;
