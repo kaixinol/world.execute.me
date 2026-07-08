@@ -723,6 +723,7 @@ function drawPoints() {
   for (let i = 0; i < 50; i++) {
     const p = document.createElement("div");
     p.className = "shape point";
+    p.style.setProperty("--i", i);
     p.style.left = `${Math.random() * 90 + 5}%`;
     p.style.top = `${Math.random() * 90 + 5}%`;
     container.appendChild(p);
@@ -747,6 +748,7 @@ function drawSineWave() {
   for (let i = 0; i < 100; i++) {
     const dot = document.createElement("div");
     dot.className = "shape sine-dot";
+    dot.style.setProperty("--i", i);
     const x = (i / 100) * width + window.innerWidth * 0.1;
     const y = Math.sin((i / 100) * Math.PI * 4) * 80 + window.innerHeight / 2;
     sineWavePoints.push({ x, y, i });
@@ -760,6 +762,7 @@ function drawTangents() {
     const p = sineWavePoints[Math.floor(Math.random() * sineWavePoints.length)];
     const tangent = document.createElement("div");
     tangent.className = "shape tangent-line";
+    tangent.style.setProperty("--i", i);
     const derivative =
       (Math.cos((p.i / 100) * Math.PI * 4) * 4 * Math.PI) / 100;
     const angle =
@@ -776,6 +779,7 @@ function drawLimitations() {
   for (let i = 0; i < 2; i++) {
     const limit = document.createElement("div");
     limit.className = "shape limit-line";
+    limit.style.setProperty("--i", i);
     limit.style.width = "100vw";
     limit.style.left = "0";
     limit.style.top = i === 0 ? "10%" : "90%";

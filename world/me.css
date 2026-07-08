@@ -393,6 +393,16 @@ html {
   border-radius: 50%;
   box-shadow: 0 0 10px var(--highlight-color);
 }
+.point {
+  animation: pointAppear 0.3s ease-out forwards;
+  animation-delay: calc(var(--i) * 30ms);
+  opacity: 0;
+}
+.sine-dot {
+  animation: scanAppear 0.2s ease-out forwards;
+  animation-delay: calc(var(--i) * 10ms);
+  opacity: 0;
+}
 .circle {
   border: 2px solid var(--highlight-color);
   border-radius: 50%;
@@ -402,9 +412,34 @@ html {
 .tangent-line {
   border-top: 1px dashed var(--love-color);
   transform-origin: left center;
+  animation: lineDraw 0.4s ease-out forwards;
+  animation-delay: calc(var(--i) * 100ms);
+  transform: scaleX(0);
 }
 .limit-line {
   border-top: 2px solid var(--error-color);
+  animation: limitDraw 0.6s ease-out forwards;
+  animation-delay: calc(var(--i) * 200ms);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+@keyframes pointAppear {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes scanAppear {
+  0% { opacity: 0; transform: scale(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes lineDraw {
+  0% { transform: scaleX(0); opacity: 0; }
+  100% { transform: scaleX(1); opacity: 1; }
+}
+@keyframes limitDraw {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
 }
 
 .chaos-text {
