@@ -324,10 +324,25 @@ html {
   font-family: var(--font-main);
 }
 .progress-bar {
+  display: block;
   height: 1.2em;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.3);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0.5em;
+}
+.progress-bar::-webkit-progress-bar {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.progress-bar::-webkit-progress-value {
   background-color: var(--text-color);
-  width: 0;
-  transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.progress-bar::-moz-progress-bar {
+  background-color: var(--text-color);
 }
 .token.keyword {
   color: #cc7832;

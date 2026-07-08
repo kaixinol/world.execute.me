@@ -711,10 +711,10 @@ function showCodeSnippet() {
 function showProgressBar() {
   const container = document.createElement("div");
   container.className = "progress-bar-container";
-  container.innerHTML = `> INITIALIZATION...<div class="progress-bar-bg"><div class="progress-bar"></div></div>`;
+  container.innerHTML = `> INITIALIZATION...<progress class="progress-bar" value="0" max="100"></progress>`;
   visuals.appendChild(container);
   setTimeout(() => {
-    container.querySelector(".progress-bar").style.width = "100%";
+    container.querySelector(".progress-bar").value = 100;
   }, 100);
 }
 
