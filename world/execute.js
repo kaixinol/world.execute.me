@@ -367,6 +367,7 @@ function startExperience() {
   song.volume = 0.3;
   song
     .play()
+    .then(() => document.fonts.ready)
     .then(() => {
       animationFrameId = requestAnimationFrame(update);
     })
@@ -721,9 +722,26 @@ function showProgressBar() {
   container.className = "progress-bar-container";
   container.innerHTML = `> INITIALIZATION...<progress class="progress-bar" value="0" max="100"></progress>`;
   visuals.appendChild(container);
-  setTimeout(() => {
-    container.querySelector(".progress-bar").value = 100;
-  }, 100);
+  const bar = container.querySelector(".progress-bar");
+  const isFirefox = navigator.userAgent.includes("Firefox");
+  if (isFirefox) {
+    const duration = 1000;
+    const start = performance.now();
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+    function animate(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      bar.value = easeInOutCubic(progress) * 100;
+      if (progress < 1) requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+  } else {
+    setTimeout(() => {
+      bar.value = 100;
+    }, 100);
+  }
 }
 
 function drawPoints() {

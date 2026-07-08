@@ -343,6 +343,7 @@ html {
 }
 .progress-bar::-moz-progress-bar {
   background-color: var(--text-color);
+  transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .token.keyword {
   color: #cc7832;
