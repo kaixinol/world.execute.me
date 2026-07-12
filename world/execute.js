@@ -405,7 +405,7 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   const line = document.createElement("div");
   line.className = `line ${className}`;
   Object.assign(line.style, style);
-  line.innerHTML = `<span class="prompt">world# </span><span class="text"><span class="cursor">█</span></span>`;
+  line.innerHTML = `<span class="prompt">world# </span><span class="text"><span class="cursor">▌</span></span>`;
   visuals.appendChild(line);
 
   const textSpan = line.querySelector(".text");
@@ -955,7 +955,7 @@ function finalExecution() {
   const final = document.createElement("div");
   final.id = "overlay";
   final.innerHTML =
-    '<span>[execution@prts.space]$ <span id="overlay-cursor">█</span></span>';
+    '<span>[execution@prts.space]$ <span id="overlay-cursor">▌</span></span>';
   document.body.appendChild(final);
 }
 
