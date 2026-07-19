@@ -373,7 +373,8 @@ function startExperience() {
     })
     .catch((e) => {
       console.error("Audio playback failed:", e);
-      overlay.innerHTML = `<span>Error: Could not play audio.</span><span>Is 'world.execute(me).ogg' in the same folder?</span>`;
+      overlay.innerHTML =
+        `<span>Error: Could not play audio.</span><span>Is 'world.execute(me).ogg' in the same folder?</span>`;
       overlay.classList.remove("hidden");
     });
 }
@@ -405,7 +406,8 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   const line = document.createElement("div");
   line.className = `line ${className}`;
   Object.assign(line.style, style);
-  line.innerHTML = `<span class="prompt">world# </span><span class="text"><span class="cursor">▌</span></span>`;
+  line.innerHTML =
+    `<span class="prompt">world# </span><span class="text"><span class="cursor">▌</span></span>`;
   visuals.appendChild(line);
 
   const textSpan = line.querySelector(".text");
@@ -443,7 +445,7 @@ function clearScreen() {
 function clearShapes() {
   document
     .querySelectorAll(
-      ".shape, .emoji-display, .gender-symbol, .time-display, .molecule, .sound-wave, .year-display, .unite-effect, .trance-overlay, .power-line, .protection-shield, .object-particle"
+      ".shape, .emoji-display, .gender-symbol, .time-display, .molecule, .sound-wave, .year-display, .unite-effect, .trance-overlay, .power-line, .protection-shield, .object-particle",
     )
     .forEach((el) => el.remove());
 }
@@ -720,7 +722,8 @@ function showCodeSnippet() {
 function showProgressBar() {
   const container = document.createElement("div");
   container.className = "progress-bar-container";
-  container.innerHTML = `> INITIALIZATION...<progress class="progress-bar" value="0" max="100"></progress>`;
+  container.innerHTML =
+    `> INITIALIZATION...<progress class="progress-bar" value="0" max="100"></progress>`;
   visuals.appendChild(container);
   const bar = container.querySelector(".progress-bar");
   const isFirefox = navigator.userAgent.includes("Firefox");
@@ -789,10 +792,9 @@ function drawTangents() {
     const tangent = document.createElement("div");
     tangent.className = "shape tangent-line";
     tangent.style.setProperty("--i", i);
-    const derivative =
-      (Math.cos((p.i / 100) * Math.PI * 4) * 4 * Math.PI) / 100;
-    const angle =
-      Math.atan((derivative * 80) / (window.innerWidth * 0.8)) *
+    const derivative = (Math.cos((p.i / 100) * Math.PI * 4) * 4 * Math.PI) /
+      100;
+    const angle = Math.atan((derivative * 80) / (window.innerWidth * 0.8)) *
       (180 / Math.PI);
     tangent.style.width = "150px";
     tangent.style.left = `${p.x}px`;
@@ -814,6 +816,11 @@ function drawLimitations() {
 }
 
 function rippleEffect() {
+  // 保留手机震动反馈
+  if ("vibrate" in navigator) {
+    navigator.vibrate([200, 100, 200]);
+  }
+
   const ripple = document.createElement("div");
   ripple.className = "shape circle";
   Object.assign(ripple.style, {
@@ -821,22 +828,31 @@ function rippleEffect() {
     left: "50%",
     top: "50%",
     transform: "translate(-50%, -50%)",
-    width: "10px",
-    height: "10px",
-    opacity: 1,
+    // 移除初始写死的 width/height/opacity，交给动画去定义
   });
   container.appendChild(ripple);
-  let size = 10;
-  const rippleInterval = setInterval(() => {
-    size += 50;
-    ripple.style.width = `${size}px`;
-    ripple.style.height = `${size}px`;
-    ripple.style.opacity = 1 - size / window.innerWidth;
-    if (size > window.innerWidth) {
-      clearInterval(rippleInterval);
-      ripple.remove();
-    }
-  }, 30);
+
+  // 计算原版动画大概的持续时间 (屏幕宽度 / 每次递增50px * 30ms)
+  const duration = (window.innerWidth / 50) * 30;
+
+  // 使用 WAAPI，浏览器 GPU 会自动计算中间的每一帧
+  const animation = ripple.animate(
+    [
+      { width: "10px", height: "10px", opacity: 1 },
+      {
+        width: `${window.innerWidth}px`,
+        height: `${window.innerWidth}px`,
+        opacity: 0,
+      },
+    ],
+    {
+      duration: duration,
+      easing: "linear",
+    },
+  );
+
+  // 动画生命周期结束后自动销毁 DOM 节点
+  animation.onfinish = () => ripple.remove();
 }
 
 function showIsolation() {
@@ -939,14 +955,24 @@ function showTrappedInLove() {
   <span class="token.keyword">this</span>.<span class="token.function">love</span>(<span class="token.string">'you'</span>);
 } <span class="love-cursor">❤</span>`;
 
-  const cursor = el.querySelector(".love-cursor");
-  const blinkInterval = setInterval(() => {
-    cursor.style.opacity = cursor.style.opacity === "0" ? "1" : "0";
-  }, 500);
-
   visuals.appendChild(el);
+  const cursor = el.querySelector(".love-cursor");
+
+  // 使用 WAAPI 实现硬切闪烁（Blink）效果
+  cursor.animate(
+    [
+      { opacity: 1, offset: 0 },
+      { opacity: 1, offset: 0.5 }, // 0~500ms 保持显示
+      { opacity: 0, offset: 0.5 }, // 瞬间变为隐藏
+      { opacity: 0, offset: 1 }    // 500~1000ms 保持隐藏
+    ],
+    {
+      duration: 1000,         // 一个完整周期 1 秒（显500ms + 隐500ms）
+      iterations: Infinity    // 无限循环
+    }
+  );
+
   setTimeout(() => {
-    clearInterval(blinkInterval);
     el.remove();
   }, 15000);
 }
