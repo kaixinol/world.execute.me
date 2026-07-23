@@ -482,9 +482,6 @@ function showPowerLines() {
 function showProtectionShield() {
   const shield = document.createElement("div");
   shield.className = "protection-shield";
-  shield.style.left = "50%";
-  shield.style.top = "50%";
-  shield.style.transform = "translate(-50%, -50%)";
   shield.style.width = "300px";
   shield.style.height = "300px";
   container.appendChild(shield);
@@ -688,8 +685,7 @@ function stopBinaryRain() {
   clearInterval(binaryRainInterval);
   const canvas = document.getElementById("binary-canvas");
   if (canvas) {
-    canvas.style.transition = "opacity 1s";
-    canvas.style.opacity = "0";
+    canvas.classList.add("fade-out");
     setTimeout(() => canvas.remove(), 1000);
   }
 }
@@ -752,10 +748,22 @@ function drawPoints() {
   for (let i = 0; i < 50; i++) {
     const p = document.createElement("div");
     p.className = "shape point";
-    p.style.setProperty("--i", i);
     p.style.left = `${Math.random() * 90 + 5}%`;
     p.style.top = `${Math.random() * 90 + 5}%`;
     container.appendChild(p);
+    p.animate(
+      [
+        { opacity: 0, transform: "scale(0)" },
+        { opacity: 1, transform: "scale(1.5)", offset: 0.5 },
+        { opacity: 1, transform: "scale(1)" },
+      ],
+      {
+        duration: 300,
+        easing: "ease-out",
+        fill: "forwards",
+        delay: i * 30,
+      },
+    );
   }
 }
 function drawCircle() {
@@ -777,21 +785,32 @@ function drawSineWave() {
   for (let i = 0; i < 100; i++) {
     const dot = document.createElement("div");
     dot.className = "shape sine-dot";
-    dot.style.setProperty("--i", i);
     const x = (i / 100) * width + window.innerWidth * 0.1;
     const y = Math.sin((i / 100) * Math.PI * 4) * 80 + window.innerHeight / 2;
     sineWavePoints.push({ x, y, i });
     dot.style.left = `${x}px`;
     dot.style.top = `${y}px`;
     container.appendChild(dot);
+    dot.animate(
+      [
+        { opacity: 0, transform: "scale(0)" },
+        { opacity: 1, transform: "scale(1)" },
+      ],
+      {
+        duration: 200,
+        easing: "ease-out",
+        fill: "forwards",
+        delay: i * 10,
+      },
+    );
   }
 }
 function drawTangents() {
+  if (!sineWavePoints.length) return;
   for (let i = 0; i < 5; i++) {
     const p = sineWavePoints[Math.floor(Math.random() * sineWavePoints.length)];
     const tangent = document.createElement("div");
     tangent.className = "shape tangent-line";
-    tangent.style.setProperty("--i", i);
     const derivative = (Math.cos((p.i / 100) * Math.PI * 4) * 4 * Math.PI) /
       100;
     const angle = Math.atan((derivative * 80) / (window.innerWidth * 0.8)) *
@@ -801,17 +820,40 @@ function drawTangents() {
     tangent.style.top = `${p.y}px`;
     tangent.style.transform = `rotate(${angle}deg)`;
     container.appendChild(tangent);
+    tangent.animate(
+      [
+        { transform: "scaleX(0)", opacity: 0 },
+        { transform: "scaleX(1)", opacity: 1 },
+      ],
+      {
+        duration: 400,
+        easing: "ease-out",
+        fill: "forwards",
+        delay: i * 100,
+      },
+    );
   }
 }
 function drawLimitations() {
   for (let i = 0; i < 2; i++) {
     const limit = document.createElement("div");
     limit.className = "shape limit-line";
-    limit.style.setProperty("--i", i);
     limit.style.width = "100vw";
     limit.style.left = "0";
     limit.style.top = i === 0 ? "10%" : "90%";
     container.appendChild(limit);
+    limit.animate(
+      [
+        { transform: "scaleX(0)" },
+        { transform: "scaleX(1)" },
+      ],
+      {
+        duration: 600,
+        easing: "ease-out",
+        fill: "forwards",
+        delay: i * 200,
+      },
+    );
   }
 }
 
@@ -894,9 +936,8 @@ function showBSOD() {
 function hideBSOD() {
   const bsod = document.getElementById("bsod-screen");
   if (bsod) {
-    bsod.style.transition = "opacity 0.5s";
-    bsod.style.opacity = "0";
-    setTimeout(() => bsod.remove(), 500);
+    bsod.classList.add("fade-out");
+    setTimeout(() => bsod.remove(), 1000);
   }
 }
 
@@ -957,20 +998,7 @@ function showTrappedInLove() {
 
   visuals.appendChild(el);
   const cursor = el.querySelector(".love-cursor");
-
-  // 使用 WAAPI 实现硬切闪烁（Blink）效果
-  cursor.animate(
-    [
-      { opacity: 1, offset: 0 },
-      { opacity: 1, offset: 0.5 }, // 0~500ms 保持显示
-      { opacity: 0, offset: 0.5 }, // 瞬间变为隐藏
-      { opacity: 0, offset: 1 }    // 500~1000ms 保持隐藏
-    ],
-    {
-      duration: 1000,         // 一个完整周期 1 秒（显500ms + 隐500ms）
-      iterations: Infinity    // 无限循环
-    }
-  );
+  cursor.classList.add("blink");
 
   setTimeout(() => {
     el.remove();

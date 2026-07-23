@@ -121,6 +121,10 @@ html {
   opacity: 0;
   pointer-events: none;
 }
+.fade-out {
+  transition: opacity 1s;
+  opacity: 0;
+}
 #overlay-cursor {
   animation: blink 1s step-end infinite;
   text-shadow: none;
@@ -410,13 +414,9 @@ html {
   box-shadow: 0 0 10px var(--highlight-color);
 }
 .point {
-  animation: pointAppear 0.3s ease-out forwards;
-  animation-delay: calc(var(--i) * 30ms);
   opacity: 0;
 }
 .sine-dot {
-  animation: scanAppear 0.2s ease-out forwards;
-  animation-delay: calc(var(--i) * 10ms);
   opacity: 0;
 }
 .circle {
@@ -428,14 +428,10 @@ html {
 .tangent-line {
   border-top: 1px dashed var(--love-color);
   transform-origin: left center;
-  animation: lineDraw 0.4s ease-out forwards;
-  animation-delay: calc(var(--i) * 100ms);
   transform: scaleX(0);
 }
 .limit-line {
   border-top: 2px solid var(--error-color);
-  animation: limitDraw 0.6s ease-out forwards;
-  animation-delay: calc(var(--i) * 200ms);
   transform: scaleX(0);
   transform-origin: left;
 }
@@ -659,6 +655,9 @@ html {
   box-shadow: 0 0 20px var(--text-color);
   animation: shieldPulse 2s infinite;
   z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 @keyframes shieldPulse {
   0% {
