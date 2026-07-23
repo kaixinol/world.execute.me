@@ -950,13 +950,12 @@ function executionSpamExtended({ duration }) {
     if (Date.now() >= endTime) return;
 
     const e = document.createElement("div");
-    e.className = "emphasis error";
+    e.className = "emphasis error execution-spam";
     e.textContent = "EXECUTION";
     Object.assign(e.style, {
       position: "absolute",
-      left: `${Math.random() * 60}%`,
+      left: `${Math.random() * 80}%`,
       top: `${Math.random() * 70}%`,
-      fontSize: `${Math.random() * 4 + 2}em`,
       transform: `rotate(${Math.random() * 40 - 20}deg)`,
       animation: "none",
       textShadow: "0 0 10px var(--error-color)",
@@ -964,10 +963,10 @@ function executionSpamExtended({ duration }) {
     });
     visuals.appendChild(e);
 
-    setTimeout(() => e.remove(), Math.random() * 1000 + 500);
+    setTimeout(() => e.remove(), Math.random() * 800 + 400);
 
     count++;
-    setTimeout(spamStep, Math.random() * 300 + 100);
+    setTimeout(spamStep, Math.random() * 400 + 200);
   }
 
   spamStep();

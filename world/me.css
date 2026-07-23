@@ -460,6 +460,14 @@ html {
   opacity: 0.8;
   animation: fadeIn 0.2s;
 }
+.execution-spam {
+  overflow: hidden;
+  max-width: calc(100vw - 2vw);
+  pointer-events: none;
+  font-size: clamp(1.5em, 5vw, 3.5em);
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
 
 /* New effect styles */
 .emoji-display {
