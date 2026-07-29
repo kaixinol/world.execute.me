@@ -1,15 +1,30 @@
 # world.execute(me)
 
+## URL Parameters
+
+Customize your playback starting point and visual theme by appending these parameters to the URL:
+
+| Parameter      | Function         | Description                                                                                   |
+| :------------- | :--------------- | :-------------------------------------------------------------------------------------------- |
+| **`jump=<num>`** | **Seek**  | Replace `num` with a number (e.g., `37`) to jump directly to a specific segment or timestamp. |
+| **`linux`**    | **Theme Switch** | Enables a Linux (systemd-BSOD) blue-screen visual style.                             |
+
+### Example
+
+<https://kaixinol.github.io/world.execute.me/?jump=37&linux>
+
+---
+
 ```java
 package goddrinksjava;
- 
+
 /**
  * The program GodDrinksJava implements an application that
  * creates an empty simulated world with no meaning or purpose.
  *
  * @author momocashew
  */
- 
+
 public class GodDrinksJava {
     public static void main(String[] args) {
         Thing me = new Lovable("Me", 0, true, -1, false);
@@ -29,9 +44,9 @@ public class GodDrinksJava {
         // Set up our new world
         // And let's begin the
         // SIMULATION
- 
- 
- 
+
+
+
         if (me instanceof PointSet) {
             you.addAttribute(me.getDimensions().toAttribute());
             me.resetDimensions();
@@ -39,7 +54,7 @@ public class GodDrinksJava {
         // If I'm a set of points
         // Then I will give you my
         // DIMENSION
- 
+
         if (me instanceof Circle) {
             you.addAttribute(me.getCircumference().toAttribute());
             me.resetCircumference();
@@ -47,43 +62,43 @@ public class GodDrinksJava {
         // If I'm a circle
         // Then I will give you my
         // CIRCUMFERENCE
- 
+
         if (me instanceof SineWave) {
             you.addAction("sit", me.getTangent(you.getXPosition()));
         }
         // If I'm a sine wave
         // Then you can sit on all my
         // TANGENTS
- 
+
         if (me instanceof Sequence) {
             me.setLimit(you.toLimit());
         }
         // If I approach infinity
         // Then you can be my
         // LIMITATIONS
- 
- 
- 
+
+
+
         me.toggleCurrent();
         // Switch my current
         // To AC to DC
- 
+
         me.canSee(false);
         me.addFeeling("dizzy");
         // And then blind my vision
         // So dizzy so dizzy
- 
+
         world.timeTravelForTwo("AD", 617, me, you);
         world.timeTravelForTwo("BC", 3691, me, you);
         // Oh we can travel
         // To A.D to B.C
- 
+
         world.unite(me, you);
         // And we can unite
         // So deeply so deeply
- 
- 
- 
+
+
+
         if (me.getNumStimulationsAvailable() >= you.getNumStimulationsNeeded()) {
             you.setSatisfaction(me.toSatisfaction());
         }
@@ -93,22 +108,22 @@ public class GodDrinksJava {
         // Then I can
         // Then I can be your only
         // SATISFACTION
- 
+
         if (you.getFeelingIndex("happy") != -1) {
             me.requestExecution(world);
         }
         // If I can make you happy
         // I will run the
         // EXECUTION
- 
+
         world.lockThing(me);
         world.lockThing(you);
         // Though we are trapped
         // In this strange strange
         // SIMULATION
- 
- 
- 
+
+
+
         if (me instanceof Eggplant) {
             you.addAttribute(me.getNutrients().toAttribute());
             me.resetNutrients();
@@ -116,7 +131,7 @@ public class GodDrinksJava {
         // If I'm an eggplant
         // Then I will give you my
         // NUTRIENTS
- 
+
         if (me instanceof Tomato) {
             you.addAttribute(me.getAntioxidants().toAttribute());
             me.resetAntioxidants();
@@ -124,42 +139,42 @@ public class GodDrinksJava {
         // If I'm a tomato
         // Then I will give you
         // ANTIOXIDANTS
- 
+
         if (me instanceof TabbyCat) {
             me.purr();
         }
         // If I'm a tabby cat
         // Then I will purr for your
         // ENJOYMENT
- 
+
         if (world.getGod().equals(me)) {
             me.setProof(you.toProof());
         }
         // If I'm the only god
         // Then you're the proof of my
         // EXISTENCE
- 
- 
- 
+
+
+
         me.toggleGender();
         // Switch my gender
         // To F to M
- 
+
         world.procreate(me, you);
         // And then do whatever
         // From AM to PM
- 
+
         me.toggleRoleBDSM();
         // Oh switch my role
         // To S to M
- 
+
         world.makeHigh(me);
         world.makeHigh(you);
         // So we can enter
         // The trance the trance
- 
- 
- 
+
+
+
         if (me.getSenseIndex("vibration")) {
             me.addFeeling("complete");
         }
@@ -169,7 +184,7 @@ public class GodDrinksJava {
         // Then I can
         // Then I can finally be
         // COMPLETION
- 
+
         world.unlock(you);
         world.removeThing(you);
         me.lookFor(you, world);
@@ -184,7 +199,7 @@ public class GodDrinksJava {
         // You have left
         // You have left me in
         // ISOLATION
- 
+
         if (me.getMemory().isErasable()) {
             me.removeFeeling("disheartened ");
         }
@@ -194,7 +209,7 @@ public class GodDrinksJava {
         // Then maybe
         // Then maybe you won't leave me so
         // DISHEARTENED
- 
+
         try {
             me.setOpinion(me.getOpinionIndex("you are here"), false);
         } catch (IllegalArgumentException e) {
@@ -203,9 +218,9 @@ public class GodDrinksJava {
         // Challenging your god
         // You have made some
         // ILLEGAL ARGUMENTS
- 
- 
- 
+
+
+
         world.runExecution();       // EXECUTION
         world.runExecution();       // EXECUTION
         world.runExecution();       // EXECUTION
@@ -225,9 +240,9 @@ public class GodDrinksJava {
         world.announce("5", "se");  // FEM
         world.announce("6", "cn");  // LIU
         world.runExecution();       // EXECUTION
- 
- 
- 
+
+
+
         if (world.isExecutableBy(me)) {
             you.setExecution(me.toExecution());
         }
@@ -237,42 +252,42 @@ public class GodDrinksJava {
         // Then I can
         // Then I can be your only
         // EXECUTION
- 
+
         if (world.getThingIndex(you) != -1) {
             world.runExecution();
         }
         // If I can have you back
         // I will run the
         // EXECUTION
- 
+
         me.escape(world);
         // Though we are trapped
         // We are trapped ah
- 
- 
- 
+
+
+
         me.learnTopic("love");
         // I've studied
         // I've studied how to properly
         // LO-O-OVE
- 
+
         me.takeExamTopic("love");
         // Question me
         // Question me I can answer all
         // LO-O-OVE
- 
+
         me.getAlgebraicExpression("love");
         // I know the algebraic expression of
         // LO-O-OVE
- 
+
         me.escape("love");
         // Though you are free
         // I am trapped
         // Trapped in
         // LO-O-OVE
- 
- 
- 
+
+
+
         world.execute(me);
         // EXECUTION
     }

@@ -941,7 +941,7 @@ function showIsolation() {
 }
 
 function showBSOD() {
-  if (isUnixLike && linuxBSOD) {
+  if ((isUnixLike && linuxBSOD)|| new URL(location.href).searchParams.has("linux")) {
     window.__bsodUnmount = linuxBSOD.mountLinuxBSOD(container, {
       qr: "https://systemd.io/DEBUGGING/",
       title: "SYSTEM FAILURE",
