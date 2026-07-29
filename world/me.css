@@ -1,5 +1,9 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Emoji:wght@500&display=swap");
-
+@font-face {
+  font-family: "Noto Emoji";
+  font-weight: 500;
+  src: url("../static/Noto_Emoji.woff2") format("woff2");
+  font-display: block;
+}
 @font-face {
   font-family: "VT323";
   src: url("../static/VT323.woff2") format("woff2");
