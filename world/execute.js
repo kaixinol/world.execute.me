@@ -778,19 +778,26 @@ function drawCircle() {
   container.appendChild(c);
 }
 let sineWavePoints = [];
+
 function drawSineWave() {
   clearShapes();
   sineWavePoints = [];
+
   const width = window.innerWidth * 0.8;
+
   for (let i = 0; i < 100; i++) {
     const dot = document.createElement("div");
     dot.className = "shape sine-dot";
     const x = (i / 100) * width + window.innerWidth * 0.1;
     const y = Math.sin((i / 100) * Math.PI * 4) * 80 + window.innerHeight / 2;
-    sineWavePoints.push({ x, y, i });
+
     dot.style.left = `${x}px`;
     dot.style.top = `${y}px`;
     container.appendChild(dot);
+
+    // 把生成好的 dot 节点保存起来，以便后续获取真实像素位置
+    sineWavePoints.push({ x, y, i, el: dot });
+
     dot.animate(
       [
         { opacity: 0, transform: "scale(0)" },
@@ -801,36 +808,60 @@ function drawSineWave() {
         easing: "ease-out",
         fill: "forwards",
         delay: i * 10,
-      },
+      }
     );
   }
 }
+
 function drawTangents() {
   if (!sineWavePoints.length) return;
-  for (let i = 0; i < 5; i++) {
-    const p = sineWavePoints[Math.floor(Math.random() * sineWavePoints.length)];
+
+  const containerRect = container.getBoundingClientRect();
+  const width = window.innerWidth * 0.8;
+
+  const count = 5;
+  const segmentSize = sineWavePoints.length / count;
+
+  // 将正弦波上的点按区间平分，在每个区间内随机选点，确保切线均匀分散在整个波形上
+  for (let i = 0; i < count; i++) {
+    const minIndex = Math.floor(i * segmentSize);
+    const maxIndex = Math.floor((i + 1) * segmentSize);
+    const randomIndex = Math.floor(minIndex + Math.random() * (maxIndex - minIndex));
+    const p = sineWavePoints[randomIndex];
+
+    if (!p) continue;
+
     const tangent = document.createElement("div");
     tangent.className = "shape tangent-line";
-    const derivative = (Math.cos((p.i / 100) * Math.PI * 4) * 4 * Math.PI) /
-      100;
-    const angle = Math.atan((derivative * 80) / (window.innerWidth * 0.8)) *
-      (180 / Math.PI);
+
+    const dotRect = p.el.getBoundingClientRect();
+    const centerX = dotRect.left + dotRect.width / 2 - containerRect.left;
+    const centerY = dotRect.top + dotRect.height / 2 - containerRect.top;
+
+    const derivative = Math.cos((p.i / 100) * Math.PI * 4) * 4 * Math.PI;
+    const slope = (derivative * 80) / width;
+    const angle = Math.atan(slope) * (180 / Math.PI);
+
     tangent.style.width = "150px";
-    tangent.style.left = `${p.x}px`;
-    tangent.style.top = `${p.y}px`;
-    tangent.style.transform = `rotate(${angle}deg)`;
+    tangent.style.left = `${centerX}px`;
+    tangent.style.top = `${centerY}px`;
+    tangent.style.transformOrigin = "center center";
+
     container.appendChild(tangent);
+
+    const baseTransform = `translate(-50%, -50%) rotate(${angle}deg)`;
+
     tangent.animate(
       [
-        { transform: "scaleX(0)", opacity: 0 },
-        { transform: "scaleX(1)", opacity: 1 },
+        { transform: `${baseTransform} scaleX(0)`, opacity: 0 },
+        { transform: `${baseTransform} scaleX(1)`, opacity: 1 },
       ],
       {
         duration: 400,
         easing: "ease-out",
         fill: "forwards",
         delay: i * 100,
-      },
+      }
     );
   }
 }

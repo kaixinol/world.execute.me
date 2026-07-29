@@ -426,8 +426,8 @@ html {
   animation: fadeIn 1s;
 }
 .tangent-line {
-  border-top: 1px dashed var(--love-color);
-  transform-origin: left center;
+  border-top: 2.5px dashed var(--love-color);
+  transform-origin: center center;
   transform: scaleX(0);
 }
 .limit-line {
