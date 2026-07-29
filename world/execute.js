@@ -76,7 +76,7 @@ const timeline = [
     args: { text: "Then you can be my", onComplete: drawLimitations },
   },
   { time: 43.507, func: showEmphasis, args: { text: "LIMITATIONS" } },
-
+  { time: 44.2, func: clearScreenAndShapes },
   // Enhanced AC/DC section
   { time: 44.452, func: typeLine, args: { text: "Switch my current" } },
   {
