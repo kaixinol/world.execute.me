@@ -4,6 +4,15 @@ const visuals = document.getElementById("visuals");
 const container = document.getElementById("container");
 
 const activeTypingIntervals = new Set();
+const isUnixLike = /linux|mac|bsd|sunos|solaris|darwin/i.test(
+  navigator.userAgent,
+);
+let linuxBSOD = null;
+if (isUnixLike) {
+  import("https://cdn.jsdelivr.net/npm/linux-bsod/+esm").then((mod) => {
+    linuxBSOD = mod;
+  });
+}
 
 const timeline = [
   {
@@ -804,7 +813,7 @@ function drawSineWave() {
         easing: "ease-out",
         fill: "forwards",
         delay: i * 10,
-      }
+      },
     );
   }
 }
@@ -822,7 +831,9 @@ function drawTangents() {
   for (let i = 0; i < count; i++) {
     const minIndex = Math.floor(i * segmentSize);
     const maxIndex = Math.floor((i + 1) * segmentSize);
-    const randomIndex = Math.floor(minIndex + Math.random() * (maxIndex - minIndex));
+    const randomIndex = Math.floor(
+      minIndex + Math.random() * (maxIndex - minIndex),
+    );
     const p = sineWavePoints[randomIndex];
 
     if (!p) continue;
@@ -857,7 +868,7 @@ function drawTangents() {
         easing: "ease-out",
         fill: "forwards",
         delay: i * 100,
-      }
+      },
     );
   }
 }
@@ -930,6 +941,17 @@ function showIsolation() {
 }
 
 function showBSOD() {
+  if (isUnixLike && linuxBSOD) {
+    window.__bsodUnmount = linuxBSOD.mountLinuxBSOD(container, {
+      qr: "https://systemd.io/DEBUGGING/",
+      title: "SYSTEM FAILURE",
+      subtitle: "Press any key to reboot.",
+      message: "[ FAILED ] Failed to start App: Invalid argument (EINVAL)",
+      fontFamily: "'DejaVu Sans Mono', 'Liberation Mono', monospace",
+    });
+    return;
+  }
+
   const bsod = document.createElement("div");
   bsod.id = "bsod-screen";
 
@@ -961,6 +983,11 @@ function showBSOD() {
   }, Math.random() * 2000 + 3000);
 }
 function hideBSOD() {
+  if (isUnixLike && window.__bsodUnmount) {
+    window.__bsodUnmount();
+    window.__bsodUnmount = null;
+    return;
+  }
   const bsod = document.getElementById("bsod-screen");
   if (bsod) {
     bsod.classList.add("fade-out");
