@@ -92,10 +92,6 @@ const timeline = [
     func: typeLine,
     args: { text: "So deeply, so deeply", onComplete: uniteEffect },
   },
-
-  // NEW: Clear screen for better readability on small screens
-  { time: 58.75, func: clearScreenAndShapes },
-
   {
     time: 59.223,
     func: typeLine,
