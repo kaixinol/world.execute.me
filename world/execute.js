@@ -45,7 +45,7 @@ const timeline = [
     func: typeLine,
     args: { text: "If I'm a set of points", onComplete: drawPoints },
   },
-  { time: 31.116, func: typeLine, args: { text: "Then I will give you my" } },
+  { time: 31.116, func: typeLine, args: { text: "Then I will give you my" , onComplete: drawDimensionVisual} },
   { time: 32.682, func: showEmphasis, args: { text: "DIMENSION" } },
   {
     time: 33.412,
@@ -1307,4 +1307,124 @@ function drawHeartFormula() {
   setTimeout(() => {
     label.classList.add("show");
   }, 600);
+}
+function drawDimensionVisual() {
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  const cx = width / 2;
+  const cy = height / 2;
+
+  const svgns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgns, "svg");
+  svg.style.position = "absolute";
+  svg.style.left = "0";
+  svg.style.top = "0";
+  svg.style.width = "100%";
+  svg.style.height = "100%";
+  svg.style.pointerEvents = "none";
+  svg.style.opacity = "0";
+  svg.style.transition = "opacity 0.8s ease-in-out";
+  container.appendChild(svg);
+
+  const baseSize = Math.min(width, height) * 0.30;
+  const scaleX = 0.75 + Math.random() * 0.6;
+  const scaleY = 0.75 + Math.random() * 0.6;
+  const scaleZ = 0.75 + Math.random() * 0.6;
+
+  const vertices = [
+    [-scaleX, -scaleY, -scaleZ], [ scaleX, -scaleY, -scaleZ],
+    [ scaleX,  scaleY, -scaleZ], [-scaleX,  scaleY, -scaleZ],
+    [-scaleX, -scaleY,  scaleZ], [ scaleX, -scaleY,  scaleZ],
+    [ scaleX,  scaleY,  scaleZ], [-scaleX,  scaleY,  scaleZ]
+  ];
+
+  const edges = [
+    [0,1], [1,2], [2,3], [3,0],
+    [4,5], [5,6], [6,7], [7,4],
+    [0,4], [1,5], [2,6], [3,7]
+  ];
+
+  const edgePaths = edges.map(() => {
+    const path = document.createElementNS(svgns, "path");
+    path.setAttribute("stroke", "var(--love-color)");
+    path.setAttribute("stroke-width", "2.5");
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    path.style.filter = "drop-shadow(0 0 10px var(--love-color))";
+    svg.appendChild(path);
+    return path;
+  });
+
+  let angleX = Math.random() * Math.PI;
+  let angleY = Math.random() * Math.PI;
+  const speedX = 0.008 + Math.random() * 0.02;
+  const speedY = 0.008 + Math.random() * 0.02;
+
+  // 💡 紀錄動畫起始時間與每一條線的完成狀態
+  const startTime = performance.now();
+  const edgeFinished = new Array(edges.length).fill(false);
+
+  // 緩動函數 (模擬 cubic-bezier(0.25, 1, 0.5, 1))
+  function easeOutQuart(x) {
+    return 1 - Math.pow(1 - x, 4);
+  }
+
+  function render(now) {
+    angleX += speedX;
+    angleY += speedY;
+
+    const projectedPoints = vertices.map(([x, y, z]) => {
+      let y1 = y * Math.cos(angleX) - z * Math.sin(angleX);
+      let z1 = y * Math.sin(angleX) + z * Math.cos(angleX);
+      let x1 = x;
+
+      let x2 = x1 * Math.cos(angleY) + z1 * Math.sin(angleY);
+      let z2 = -x1 * Math.sin(angleY) + z1 * Math.cos(angleY);
+      let y2 = y1;
+
+      const distance = 3;
+      const fov = 1 / (distance + z2 / 2);
+      return [cx + x2 * baseSize * fov, cy + y2 * baseSize * fov];
+    });
+
+    edges.forEach(([start, end], idx) => {
+      const [x1, y1] = projectedPoints[start];
+      const [x2, y2] = projectedPoints[end];
+      const path = edgePaths[idx];
+
+      // 先更新路徑
+      path.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2}`);
+
+      // 💡 如果動畫尚未完成，根據「當前實時長度」計算 strokeDashoffset
+      if (!edgeFinished[idx]) {
+        const currentLen = path.getTotalLength();
+        const delay = idx * 50;
+        const duration = 600;
+        const elapsed = now - startTime - delay;
+
+        if (elapsed <= 0) {
+          path.style.strokeDasharray = currentLen;
+          path.style.strokeDashoffset = currentLen;
+        } else if (elapsed < duration) {
+          const progress = easeOutQuart(elapsed / duration);
+          path.style.strokeDasharray = currentLen;
+          path.style.strokeDashoffset = currentLen * (1 - progress);
+        } else {
+          // 動畫結束，清除 dash 樣式以維持最佳效能
+          path.style.strokeDasharray = "";
+          path.style.strokeDashoffset = "";
+          edgeFinished[idx] = true;
+        }
+      }
+    });
+
+    requestAnimationFrame(render);
+  }
+
+  requestAnimationFrame(render);
+
+  requestAnimationFrame(() => {
+    svg.style.opacity = "1";
+  });
 }
