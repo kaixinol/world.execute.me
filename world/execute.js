@@ -95,11 +95,11 @@ const timeline = [
     func: typeLine,
     args: { text: "To A.D to B.C", onComplete: timeTravel },
   },
-  { time: 55.083, func: typeLine, args: { text: "And we can unite" } },
+  { time: 55.083, func: typeLine, args: { text: "And we can unite" , onComplete: uniteEffect } },
   {
     time: 56.916,
     func: typeLine,
-    args: { text: "So deeply, so deeply", onComplete: uniteEffect },
+    args: { text: "So deeply, so deeply"},
   },
   {
     time: 59.223,
@@ -560,18 +560,31 @@ function timeTravel() {
 
 // Unite Effect
 function uniteEffect() {
-  for (let i = 0; i < 3; i++) {
-    setTimeout(() => {
-      const unite = document.createElement("div");
-      unite.className = "unite-effect";
-      unite.style.left = `${30 + i * 20}%`;
-      unite.style.top = `${40 + i * 10}%`;
-      container.appendChild(unite);
-      setTimeout(() => unite.remove(), 2000);
-    }, i * 500);
-  }
-}
+  const containerEl = document.createElement("div");
+  containerEl.className = "unite-container";
 
+  containerEl.innerHTML = `
+    <svg class="unite-svg" viewBox="0 0 200 200">
+      <!-- 女性符号 ♀ -->
+      <g class="unite-female-group" style="transform-origin: 100px 80px;">
+        <circle cx="100" cy="80" r="32" fill="none" stroke="#ff69b4" stroke-width="8" />
+        <path d="M 100 112 V 155 M 80 135 H 120" stroke="#ff69b4" stroke-width="8" stroke-linecap="round" />
+      </g>
+      <!-- 男性符号 ♂ -->
+      <g class="unite-male-group" style="transform-origin: 100px 80px;">
+        <circle cx="100" cy="80" r="32" fill="none" stroke="#00bfff" stroke-width="8" />
+        <path d="M 122 58 L 152 28 M 130 28 H 152 V 50" stroke="#00bfff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </g>
+    </svg>
+    <div class="unite-pulse-wave"></div>
+  `;
+
+  container.appendChild(containerEl);
+
+  setTimeout(() => {
+    containerEl.remove();
+  }, 3140);
+}
 // Emoji Display
 function showEmoji(emoji) {
   const el = document.createElement("div");

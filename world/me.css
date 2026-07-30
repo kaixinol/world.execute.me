@@ -219,20 +219,6 @@ html {
     transform: translate(0.5px, 1px) rotate(-0.1deg);
   }
 }
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-}
 @keyframes reversePulse {
   0% {
     transform: scale(0.9);
@@ -447,25 +433,6 @@ code {
   transform: scaleX(0);
   transform-origin: left;
 }
-
-@keyframes pointAppear {
-  0% { opacity: 0; transform: scale(0); }
-  50% { opacity: 1; transform: scale(1.5); }
-  100% { opacity: 1; transform: scale(1); }
-}
-@keyframes scanAppear {
-  0% { opacity: 0; transform: scale(0); }
-  100% { opacity: 1; transform: scale(1); }
-}
-@keyframes lineDraw {
-  0% { transform: scaleX(0); opacity: 0; }
-  100% { transform: scaleX(1); opacity: 1; }
-}
-@keyframes limitDraw {
-  0% { transform: scaleX(0); }
-  100% { transform: scaleX(1); }
-}
-
 .chaos-text {
   position: absolute;
   font-family: var(--font-display);
@@ -730,4 +697,141 @@ code {
 }
 .heart-formula-label.show {
   opacity: 1;
+}
+/* 结合动画容器 */
+.unite-container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 260px;
+  height: 260px;
+  pointer-events: none;
+  z-index: 15;
+  /* 隔离混合模式，确保混合只发生在两个符号之间 */
+  isolation: isolate;
+}
+
+.unite-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* 核心解决方案：开启屏幕滤色混合模式 */
+.unite-female-group,
+.unite-male-group {
+  /* 粉色 + 蓝色重叠时会融合为靓丽的紫白亮光，不再是被蓝色挡住 */
+  mix-blend-mode: screen;
+}
+
+/* 女性符号 ♀ (粉色) 动画 */
+.unite-female-group {
+  animation: mergeFemale 2.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* 男性符号 ♂ (蓝色) 动画 */
+.unite-male-group {
+  animation: mergeMale 2.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* --- 女性符号关键帧：平滑淡入 -> 靠近 -> 完全融合 -> 爆发消散 --- */
+@keyframes mergeFemale {
+  0% {
+    opacity: 0;
+    transform: translate(-120px, 0) scale(0.3);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+
+  /* 25% 处：柔和淡入显现，并移动到两侧准备相撞 */
+  25% {
+    opacity: 1;
+    transform: translate(-45px, 0) scale(1);
+    filter: drop-shadow(0 0 10px #ff69b4);
+  }
+
+  /* 60% 处：精准重合在中心，极光交织 */
+  60% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+    filter: drop-shadow(0 0 20px #ff69b4);
+  }
+
+  /* 85% 处：融合成一体并爆发光芒 */
+  85% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.6);
+    filter: drop-shadow(0 0 35px #ffffff);
+  }
+
+  /* 100% 处：平滑渐隐消散 */
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(2.6);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+}
+
+/* --- 男性符号关键帧：平滑淡入 -> 靠近 -> 完全融合 -> 爆发消散 --- */
+@keyframes mergeMale {
+  0% {
+    opacity: 0;
+    transform: translate(120px, 0) scale(0.3);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+
+  /* 25% 处：柔和淡入显现，并移动到两侧准备相撞 */
+  25% {
+    opacity: 1;
+    transform: translate(45px, 0) scale(1);
+    filter: drop-shadow(0 0 10px #00bfff);
+  }
+
+  /* 60% 处：精准重合在中心，极光交织 */
+  60% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+    filter: drop-shadow(0 0 20px #00bfff);
+  }
+
+  /* 85% 处：融合成一体并爆发光芒 */
+  85% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1.6);
+    filter: drop-shadow(0 0 35px #ffffff);
+  }
+
+  /* 100% 处：平滑渐隐消散 */
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(2.6);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+}
+
+/* 结合融合时爆开的中心冲击波 */
+.unite-pulse-wave {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  transform: translate(-50%, -50%);
+  width: 80px;
+  height: 80px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 25px var(--love-color), inset 0 0 25px var(--love-color);
+  animation: pulseWaveExpand 1.3s ease-out 1.2s forwards;
+  opacity: 0;
+}
+
+@keyframes pulseWaveExpand {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(4.5);
+  }
 }
