@@ -1123,7 +1123,7 @@ function finalExecution() {
   const final = document.createElement("div");
   final.id = "overlay";
   final.innerHTML =
-    '<span>[execution@prts.space]$ <span id="overlay-cursor">▌</span></span>';
+    `<span>[execution@${location.hostname}]$ <span id="overlay-cursor">▌</span></span>`;
   document.body.appendChild(final);
 }
 
