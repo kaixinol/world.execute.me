@@ -337,15 +337,13 @@ const timeline = [
   {
     time: 183.646,
     func: showEmphasis,
-    args: { text: "L O-O-O V E", className: "love" },
+    args: { text: "L O-O-O V E", className: "love" , onComplete: () =>  setTimeout(drawHeartFormula, 1500) },
   },
   {
     time: 184.54,
     func: typeLine,
     args: {
-      text: "I know the algebraic expression of",
-      onComplete: drawHeartFormula,
-    },
+      text: "I know the algebraic expression of"},
   },
   {
     time: 187.665,
