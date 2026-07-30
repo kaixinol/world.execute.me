@@ -1336,10 +1336,14 @@ function drawDimensionVisual() {
   svg.style.transition = "opacity 0.8s ease-in-out";
   container.appendChild(svg);
 
-  const baseSize = Math.min(width, height) * 0.30;
-  const scaleX = 0.75 + Math.random() * 0.6;
-  const scaleY = 0.75 + Math.random() * 0.6;
-  const scaleZ = 0.75 + Math.random() * 0.6;
+  // 💡 修改 1：基准尺寸更大 (从 0.30 增加到 0.45)
+  const baseSize = Math.min(width, height) * 0.45;
+
+  // 💡 修改 2：缩放随机性更强 (从 0.75~1.35 扩大到 0.6~1.8)
+  // 这会产生形状更扁或更长的“异形”立方体
+  const scaleX = 0.6 + Math.random() * 1.2;
+  const scaleY = 0.6 + Math.random() * 1.2;
+  const scaleZ = 0.6 + Math.random() * 1.2;
 
   const vertices = [
     [-scaleX, -scaleY, -scaleZ], [ scaleX, -scaleY, -scaleZ],
@@ -1368,14 +1372,16 @@ function drawDimensionVisual() {
 
   let angleX = Math.random() * Math.PI;
   let angleY = Math.random() * Math.PI;
+  // 💡 修改 3：添加 Z 轴初始角度和速度
+  let angleZ = Math.random() * Math.PI;
+
   const speedX = 0.008 + Math.random() * 0.02;
   const speedY = 0.008 + Math.random() * 0.02;
+  const speedZ = 0.005 + Math.random() * 0.015; // Z轴速度通常稍慢看起来更舒服
 
-  // 💡 紀錄動畫起始時間與每一條線的完成狀態
   const startTime = performance.now();
   const edgeFinished = new Array(edges.length).fill(false);
 
-  // 緩動函數 (模擬 cubic-bezier(0.25, 1, 0.5, 1))
   function easeOutQuart(x) {
     return 1 - Math.pow(1 - x, 4);
   }
@@ -1383,19 +1389,30 @@ function drawDimensionVisual() {
   function render(now) {
     angleX += speedX;
     angleY += speedY;
+    // 💡 修改 3：累加 Z 轴角度
+    angleZ += speedZ;
 
     const projectedPoints = vertices.map(([x, y, z]) => {
+      // 1. 绕 X 轴旋转
       let y1 = y * Math.cos(angleX) - z * Math.sin(angleX);
       let z1 = y * Math.sin(angleX) + z * Math.cos(angleX);
       let x1 = x;
 
+      // 2. 绕 Y 轴旋转
       let x2 = x1 * Math.cos(angleY) + z1 * Math.sin(angleY);
       let z2 = -x1 * Math.sin(angleY) + z1 * Math.cos(angleY);
       let y2 = y1;
 
+      // 💡 修改 3：添加绕 Z 轴旋转 (应用于已旋转过的 x2, y2)
+      let x3 = x2 * Math.cos(angleZ) - y2 * Math.sin(angleZ);
+      let y3 = x2 * Math.sin(angleZ) + y2 * Math.cos(angleZ);
+      let z3 = z2;
+
+      // 投影 (使用 Z 轴旋转后的坐标 x3, y3, z3)
       const distance = 3;
-      const fov = 1 / (distance + z2 / 2);
-      return [cx + x2 * baseSize * fov, cy + y2 * baseSize * fov];
+      // 这里的 z2 (物体深度) 在 Z 轴旋转下通常不改变，但为了严谨使用最终的 z3
+      const fov = 1 / (distance + z3 / 2);
+      return [cx + x3 * baseSize * fov, cy + y3 * baseSize * fov];
     });
 
     edges.forEach(([start, end], idx) => {
@@ -1403,10 +1420,8 @@ function drawDimensionVisual() {
       const [x2, y2] = projectedPoints[end];
       const path = edgePaths[idx];
 
-      // 先更新路徑
       path.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2}`);
 
-      // 💡 如果動畫尚未完成，根據「當前實時長度」計算 strokeDashoffset
       if (!edgeFinished[idx]) {
         const currentLen = path.getTotalLength();
         const delay = idx * 50;
@@ -1421,7 +1436,6 @@ function drawDimensionVisual() {
           path.style.strokeDasharray = currentLen;
           path.style.strokeDashoffset = currentLen * (1 - progress);
         } else {
-          // 動畫結束，清除 dash 樣式以維持最佳效能
           path.style.strokeDasharray = "";
           path.style.strokeDashoffset = "";
           edgeFinished[idx] = true;
@@ -1438,7 +1452,6 @@ function drawDimensionVisual() {
     svg.style.opacity = "1";
   });
 }
-
 function drawCircumferenceCompass() {
   const width = container.clientWidth;
   const height = container.clientHeight;
