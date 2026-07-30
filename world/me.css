@@ -326,8 +326,11 @@ html {
   background-color: var(--text-color);
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
-code {
-  text-shadow:none
+.code-snippet code{
+  text-shadow:none;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  overflow-x: auto;
 }
 
 /* 既有样式 */
@@ -660,20 +663,33 @@ code {
 }
 .heart-formula-label {
   position: absolute;
-  top: 50%;
+  top: calc(50% - 20px);
   left: 50%;
   transform: translate(-50%, -50%);
   color: var(--love-color);
-  font-size: 0.80em;
-  font-weight: 500;
+  font-weight: 700;
   text-shadow: 0 0 8px var(--love-color);
   pointer-events: none;
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.8s ease;
 }
+
 .heart-formula-label.show {
   opacity: 1;
+}
+
+/* 手機端樣式：單行不換行、字體清晰加粗 */
+@media (max-width: 768px) {
+  .heart-formula-label {
+    top: calc(50% - 20px + 27vw);
+    transform: translateX(-50%);
+    white-space: nowrap;
+    max-width: none;
+    font-size: clamp(0.8rem, 3.8vw, 0.95rem);
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--love-color), 0 0 4px var(--love-color);
+  }
 }
 /* 结合动画容器 */
 .unite-container {

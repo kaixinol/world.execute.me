@@ -1244,9 +1244,12 @@ function fragmentsShatter() {
   }, HOLD_TIME);
 }
 function drawHeartFormula() {
-  const scale = Math.min(window.innerWidth, window.innerHeight) * 0.015;
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2 - 20;
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  const scale = Math.min(width, height) * 0.015;
+  const centerX = width / 2;
+  const centerY = height / 2 - 20;
 
   const svgns = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgns, "svg");
