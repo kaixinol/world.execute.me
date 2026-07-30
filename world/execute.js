@@ -84,7 +84,7 @@ const timeline = [
     func: typeLine,
     args: { text: "To AC, to DC", onComplete: currentSwitch },
   },
-  { time: 47.672, func: typeLine, args: { text: "And then blind my vision" } },
+  { time: 47.672, func: typeLine, args: { text: "And then blind my vision", onComplete: clearShapes } },
   { time: 49.534, func: blindVision },
   { time: 50.0, func: typeLine, args: { text: "So dizzy, so dizzy" } },
 
@@ -106,7 +106,11 @@ const timeline = [
     func: typeLine,
     args: { text: "If I can, If I can give you all the" },
   },
-  { time: 61.958, func: showEmphasis, args: { text: "STIMULATIONS" } },
+  {
+    time: 61.958,
+    func: showEmphasis,
+    args: { text: "STIMULATIONS", onComplete: stimulationsEffect },
+  },
   {
     time: 62.589,
     func: typeLine,
@@ -158,7 +162,13 @@ const timeline = [
   {
     time: 85.078,
     func: typeLine,
-    args: { text: "If I'm the only god", onComplete: () => showEmoji("⚡") },
+    args: {
+      text: "If I'm the only god",
+      onComplete: () => {
+        showEmoji("⚡");
+        lightningStrikes();
+      },
+    },
   },
   {
     time: 86.538,
@@ -228,7 +238,11 @@ const timeline = [
     func: typeLine,
     args: { text: "If I can, If I can erase all the pointless" },
   },
-  { time: 120.86, func: showEmphasis, args: { text: "FRAGMENTS" } },
+  {
+    time: 120.86,
+    func: showEmphasis,
+    args: { text: "FRAGMENTS", onComplete: fragmentsShatter },
+  },
   {
     time: 121.728,
     func: typeLine,
@@ -243,7 +257,7 @@ const timeline = [
     args: {
       target: container,
       className: "error screenShake",
-      duration: 12000,
+      duration: 7792,
     },
   },
   { time: 125.708, func: typeLine, args: { text: "Challenging your god..." } },
@@ -328,7 +342,10 @@ const timeline = [
   {
     time: 184.54,
     func: typeLine,
-    args: { text: "I know the algebraic expression of" },
+    args: {
+      text: "I know the algebraic expression of",
+      onComplete: drawHeartFormula,
+    },
   },
   {
     time: 187.665,
@@ -336,7 +353,7 @@ const timeline = [
     args: { text: "L O-O-O V E", className: "love" },
   },
 
-  { time: 188.483, func: clearScreen },
+  { time: 188.483, func: clearScreenAndShapes },
   {
     time: 188.483,
     func: typeLine,
@@ -448,11 +465,11 @@ function clearScreen() {
   visuals.innerHTML = "";
 }
 function clearShapes() {
-  document
-    .querySelectorAll(
-      ".shape, .emoji-display, .gender-symbol, .time-display, .molecule, .sound-wave, .year-display, .unite-effect, .trance-overlay, .power-line, .protection-shield, .object-particle",
-    )
-    .forEach((el) => el.remove());
+  Array.from(container.children).forEach((child) => {
+    if (child.id !== "visuals") {
+      child.remove();
+    }
+  });
 }
 function clearScreenAndShapes() {
   clearScreen();
@@ -495,12 +512,29 @@ function showProtectionShield() {
 
 // AC/DC Current Switch
 function currentSwitch() {
-  addClass({ target: container, className: "ac-mode", duration: 900 });
-  setTimeout(() => {
-    addClass({ target: container, className: "dc-mode", duration: 900 });
-  }, 900);
-}
+  clearShapes();
+  addClass({ target: container, className: "ac-mode", duration: 1000 });
+  // AC: 复用正弦波动画
+  drawSineWave("ac");
 
+  // DC: 1秒后切换为直流电平直线
+  setTimeout(() => {
+    clearShapes();
+    addClass({ target: container, className: "dc-mode", duration: 1000 });
+    const dcLine = document.createElement("div");
+    dcLine.className = "shape limit-line";
+    dcLine.style.borderColor = "#4444ff";
+    dcLine.style.top = "50%";
+    dcLine.style.width = "100vw";
+    dcLine.style.boxShadow = "0 0 10px #4444ff";
+    container.appendChild(dcLine);
+
+    dcLine.animate(
+      [{ transform: "scaleX(0)" }, { transform: "scaleX(1)" }],
+      { duration: 400, easing: "ease-out", fill: "forwards" },
+    );
+  }, 1000);
+}
 // Blind Vision Effect (updated: no rotation)
 function blindVision() {
   addClass({ target: container, className: "blind dizzy", duration: 2000 });
@@ -784,7 +818,7 @@ function drawCircle() {
 }
 let sineWavePoints = [];
 
-function drawSineWave() {
+function drawSineWave(type) {
   clearShapes();
   sineWavePoints = [];
 
@@ -798,6 +832,9 @@ function drawSineWave() {
 
     dot.style.left = `${x}px`;
     dot.style.top = `${y}px`;
+    if (type === "ac") {
+      dot.style.setProperty("--highlight-color", "red");
+    }
     container.appendChild(dot);
 
     // 把生成好的 dot 节点保存起来，以便后续获取真实像素位置
@@ -941,7 +978,10 @@ function showIsolation() {
 }
 
 function showBSOD() {
-  if ((isUnixLike && linuxBSOD)|| new URL(location.href).searchParams.has("linux")) {
+  if (
+    (isUnixLike && linuxBSOD) ||
+    new URL(location.href).searchParams.has("linux")
+  ) {
     window.__bsodUnmount = linuxBSOD.mountLinuxBSOD(container, {
       qr: "https://systemd.io/DEBUGGING/",
       title: "SYSTEM FAILURE",
@@ -1070,4 +1110,187 @@ function varGet(name) {
   return getComputedStyle(document.documentElement)
     .getPropertyValue(name)
     .trim();
+}
+function stimulationsEffect() {
+  addClass({
+    target: container,
+    className: "screenShake",
+    duration: 600,
+  });
+}
+function lightningStrikes() {
+  const emoji = container.querySelector(".emoji-display");
+  const rect = emoji
+    ? emoji.getBoundingClientRect()
+    : {
+      left: window.innerWidth / 2,
+      top: window.innerHeight / 2,
+      width: 0,
+      height: 0,
+    };
+
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+
+  // 放电的闪电数量
+  const boltCount = 6;
+
+  for (let i = 0; i < boltCount; i++) {
+    // 错开时间发射，营造不规则的放电感
+    setTimeout(() => {
+      // 1. 创建 SVG 容器（无需宽高，允许内容溢出即可）
+      const svgns = "http://www.w3.org/2000/svg";
+      const svg = document.createElementNS(svgns, "svg");
+      svg.style.position = "absolute";
+      svg.style.left = `${centerX}px`;
+      svg.style.top = `${centerY}px`;
+      svg.style.overflow = "visible";
+      svg.style.pointerEvents = "none";
+      container.appendChild(svg);
+
+      const path = document.createElementNS(svgns, "path");
+
+      // 2. 计算随机方向和长度
+      const angle = Math.random() * Math.PI * 2; // 360度随机方向
+      const length = 150 + Math.random() * 150; // 闪电长度 (150px - 300px)
+      const segments = 6 + Math.floor(Math.random() * 4); // 曲折的段数 (6-9段)
+      const segmentLen = length / segments;
+
+      // 3. 生成曲折的锯齿路径
+      let d = "M 0 0"; // 从中心点开始
+      for (let j = 1; j <= segments; j++) {
+        // 主方向上的推进
+        const r = segmentLen * j;
+        const mainX = r * Math.cos(angle);
+        const mainY = r * Math.sin(angle);
+
+        // 计算垂直于主方向的随机偏移（这就是“曲折”的秘诀）
+        const jitter = (Math.random() - 0.5) * 60; // 偏移幅度
+        const perpAngle = angle + Math.PI / 2;
+        const x = mainX + jitter * Math.cos(perpAngle);
+        const y = mainY + jitter * Math.sin(perpAngle);
+
+        d += ` L ${x} ${y}`;
+      }
+
+      // 4. 设置闪电样式
+      path.setAttribute("d", d);
+      path.setAttribute("fill", "none");
+      path.setAttribute("stroke", "#FFD700"); // 闪电颜色 (金色)
+      path.setAttribute("stroke-width", "3");
+      // 用 CSS 滤镜加上外发光
+      path.style.filter = "drop-shadow(0 0 10px #FFD700)";
+      svg.appendChild(path);
+
+      // 5. 动画：利用 strokeDashoffset 实现线条“生长”效果
+      const pathLen = path.getTotalLength() || length * 1.5;
+
+      path.animate(
+        [
+          { strokeDasharray: pathLen, strokeDashoffset: pathLen, opacity: 1 },
+          { strokeDashoffset: 0, opacity: 1, offset: 0.2 }, // 前 20% 的时间快速“劈出”
+          { strokeDashoffset: 0, opacity: 0 }, // 剩下的时间慢慢消散
+        ],
+        {
+          duration: 400 + Math.random() * 300, // 持续时间随机，更自然
+          easing: "ease-out",
+        },
+      ).onfinish = () => svg.remove(); // 动画结束销毁 DOM
+    }, i * 80);
+  }
+}
+function fragmentsShatter() {
+  const emphasisEl = visuals.querySelector(".emphasis:last-child");
+  if (!emphasisEl) return;
+
+  const text = emphasisEl.textContent;
+  emphasisEl.textContent = "";
+
+  // 1. 先把字符拆分好，按正常样式渲染出来
+  const spans = [...text].map((char) => {
+    const span = document.createElement("span");
+    // 兼容空格，防止空字符折叠
+    span.textContent = char === " " ? "\u00A0" : char;
+    span.style.display = "inline-block";
+    span.style.transition = "all 1.2s cubic-bezier(0.25, 1, 0.5, 1)";
+    emphasisEl.appendChild(span);
+    return span;
+  });
+
+  // 2. 关键点：设置文字停留时间（毫秒）
+  // 建议 800ms ~ 1200ms，既能看清 "FRAGMENTS"，又不会显得卡顿
+  const HOLD_TIME = 800;
+
+  // 3. 停留结束后，再统一触发飞散崩塌
+  setTimeout(() => {
+    spans.forEach((span) => {
+      const x = (Math.random() - 0.5) * 300;
+      const y = Math.random() * 300 + 150;
+      const rot = (Math.random() - 0.5) * 720;
+      span.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+      span.style.opacity = "0";
+    });
+  }, HOLD_TIME);
+}
+function drawHeartFormula() {
+  const scale = Math.min(window.innerWidth, window.innerHeight) * 0.015;
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2 - 20;
+
+  const svgns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgns, "svg");
+  svg.style.position = "absolute";
+  svg.style.left = "0";
+  svg.style.top = "0";
+  svg.style.width = "100%";
+  svg.style.height = "100%";
+  svg.style.pointerEvents = "none";
+  container.appendChild(svg);
+
+  const pointsCount = 200;
+  let pathData = "";
+
+  for (let i = 0; i <= pointsCount; i++) {
+    const t = (i / pointsCount) * Math.PI * 2;
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y =
+      -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) -
+        Math.cos(4 * t));
+
+    const px = centerX + x * scale;
+    const py = centerY + y * scale;
+
+    if (i === 0) {
+      pathData += `M ${px} ${py}`;
+    } else {
+      pathData += ` L ${px} ${py}`;
+    }
+  }
+
+  const path = document.createElementNS(svgns, "path");
+  path.setAttribute("d", pathData);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", "var(--love-color)");
+  path.setAttribute("stroke-width", "3");
+  path.setAttribute("stroke-linejoin", "round");
+  path.style.filter = "drop-shadow(0 0 10px var(--love-color))";
+  svg.appendChild(path);
+
+  const pathLen = path.getTotalLength();
+  path.animate(
+    [
+      { strokeDasharray: pathLen, strokeDashoffset: pathLen },
+      { strokeDasharray: pathLen, strokeDashoffset: 0 },
+    ],
+    { duration: 1500, easing: "ease-in-out", fill: "forwards" },
+  );
+
+  const label = document.createElement("div");
+  label.className = "heart-formula-label";
+  label.innerHTML = "Formula: (x² + y² - 1)³ - x²y³ = 0";
+  container.appendChild(label);
+
+  setTimeout(() => {
+    label.classList.add("show");
+  }, 600);
 }
