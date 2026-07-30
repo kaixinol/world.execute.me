@@ -733,12 +733,12 @@ function showCodeSnippet() {
   const el = document.createElement("div");
   el.className = "code-snippet";
   el.innerHTML = `> OBJECT CREATION...
-<span class="token.keyword">class</span> <span class="token.class-name">Me</span> {
-  <span class="token.function">constructor</span>(<span class="token.string">'you'</span>) {
-    <span class="token.keyword">this</span>.world = <span class="token.string">'you'</span>;
-    <span class="token.keyword">this</span>.existence = <span class="token.keyword">new</span> <span class="token.function">Promise</span>(...)
+<code><span class="token keyword">class</span> <span class="token class-name">Me</span> {
+  <span class="token function">constructor</span>(<span class="token parameter"><span class="token string">'you'</span></span>) {
+    <span class="token keyword">this</span>.<span class="token property">world</span> = <span class="token string">'you'</span>;
+    <span class="token keyword">this</span>.<span class="token property">existence</span> = <span class="token keyword">new</span> <span class="token class-name">Promise</span>(...);
   }
-}`;
+}</code>`;
   visuals.appendChild(el);
 
   // Add object creation particles
@@ -1085,9 +1085,9 @@ function showTrappedInLove() {
   el.className = "code-snippet love";
   el.style.borderColor = "var(--love-color)";
   el.innerHTML = `> Trapped in LOVE...
-<span class="token.keyword">while</span>(<span class="token.class-name">true</span>) {
-  <span class="token.keyword">this</span>.<span class="token.function">love</span>(<span class="token.string">'you'</span>);
-} <span class="love-cursor">❤</span>`;
+<code><span class="token keyword">while</span> (<span class="token boolean">true</span>) {
+  <span class="token keyword">this</span>.<span class="token property">world</span>.<span class="token function">love</span>(<span class="token string">'you'</span>);
+} <span class="love-cursor">❤</span></code>`;
 
   visuals.appendChild(el);
   const cursor = el.querySelector(".love-cursor");

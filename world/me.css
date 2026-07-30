@@ -340,19 +340,40 @@ html {
   background-color: var(--text-color);
   transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
+code {
+  text-shadow:none
+}
+
+/* 既有样式 */
 .token.keyword {
   color: #cc7832;
 }
+
 .token.class-name {
   color: #a9b7c6;
 }
+
 .token.function {
   color: #ffc66d;
 }
+
 .token.string {
   color: #6a8759;
 }
 
+/* 补全样式：Darcula 风格下的属性与布尔值 */
+.token.property {
+  color: #9876aa;
+  /* 紫色：对应 world */
+}
+
+.token.boolean {
+  color: #cc7832;
+  /* 橙色：对应 true */
+}
+.token.parameter {
+  color: #a9b7c6; /* 参数变量颜色 */
+}
 #bsod-screen {
   background-color: var(--bsod-bg);
   color: var(--bsod-text);
