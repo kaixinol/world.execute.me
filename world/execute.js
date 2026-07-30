@@ -53,7 +53,7 @@ const timeline = [
     args: { text: "If I'm a circle", onComplete: drawCircle },
   },
   { time: 34.646, func: typeLine, args: { text: "Then I will give you my" } },
-  { time: 36.287, func: showEmphasis, args: { text: "CIRCUMFERENCE" } },
+  { time: 36.287, func: showEmphasis, args: { text: "CIRCUMFERENCE", onComplete: drawCircumferenceCompass} },
   {
     time: 37.067,
     func: typeLine,
@@ -816,16 +816,26 @@ function drawPoints() {
     );
   }
 }
+let currentCircle = { cx: 0, cy: 0, r: 0 };
+
 function drawCircle() {
   clearShapes();
   const c = document.createElement("div");
   c.className = "shape circle";
   const s = Math.min(innerWidth, innerHeight) * 0.4;
+  const r = s / 2;
   c.style.width = `${s}px`;
   c.style.height = `${s}px`;
-  c.style.left = `calc(50% - ${s / 2}px)`;
-  c.style.top = `calc(50% - ${s / 2}px)`;
+  c.style.left = `calc(50% - ${r}px)`;
+  c.style.top = `calc(50% - ${r}px)`;
   container.appendChild(c);
+
+  // 记录圆心和半径供后续 CIRCUMFERENCE 圆规动画精准对接
+  currentCircle = {
+    cx: container.clientWidth / 2,
+    cy: container.clientHeight / 2,
+    r: r,
+  };
 }
 let sineWavePoints = [];
 
@@ -1427,4 +1437,109 @@ function drawDimensionVisual() {
   requestAnimationFrame(() => {
     svg.style.opacity = "1";
   });
+}
+
+function drawCircumferenceCompass() {
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  const cx = currentCircle.cx || width / 2;
+  const cy = currentCircle.cy || height / 2;
+  const r = currentCircle.r || Math.min(width, height) * 0.2;
+
+  const svgns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(svgns, "svg");
+  svg.setAttribute("class", "compass-svg");
+  container.appendChild(svg);
+
+  // 1. 劃過留下的紅色圓弧軌跡
+  const arcPath = document.createElementNS(svgns, "path");
+  arcPath.setAttribute("class", "compass-arc-path");
+  svg.appendChild(arcPath);
+
+  // 2. 旋轉虛線指針
+  const pointerLine = document.createElementNS(svgns, "line");
+  pointerLine.setAttribute("class", "compass-line");
+  pointerLine.setAttribute("x1", cx);
+  pointerLine.setAttribute("y1", cy);
+  pointerLine.setAttribute("x2", cx);
+  pointerLine.setAttribute("y2", cy);
+  svg.appendChild(pointerLine);
+
+  // 3. 圓心點
+  const centerDot = document.createElementNS(svgns, "circle");
+  centerDot.setAttribute("class", "compass-center-dot");
+  centerDot.setAttribute("cx", cx);
+  centerDot.setAttribute("cy", cy);
+  svg.appendChild(centerDot);
+
+  // 4. 指針末端點
+  const tipDot = document.createElementNS(svgns, "circle");
+  tipDot.setAttribute("class", "compass-tip-dot");
+  tipDot.setAttribute("cx", cx);
+  tipDot.setAttribute("cy", cy);
+  svg.appendChild(tipDot);
+
+  // 5. 動態標籤
+  const label = document.createElement("div");
+  label.className = "compass-label";
+  label.textContent = "C ≈ 0.00 π";
+  container.appendChild(label);
+
+  // 起始點座標 (0 度方向，即 3 點鐘方向)
+  const startX = cx + r;
+  const startY = cy;
+
+  // 勻速旋轉動畫 (1.8 秒)
+  const duration = 1800;
+  let startTime = null;
+
+  function animate(now) {
+    if (!startTime) {
+      startTime = now;
+      svg.style.opacity = "1";
+      label.style.opacity = "1";
+    }
+
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const angle = progress * 2 * Math.PI; // 0 -> 2π 勻速角度
+
+    // 當前末端座標
+    const px = cx + r * Math.cos(angle);
+    const py = cy + r * Math.sin(angle);
+
+    // 更新紅色的劃過弧線路徑 (超過 180 度時大弧標誌 largeArcFlag 需為 1)
+    const largeArcFlag = angle > Math.PI ? 1 : 0;
+    if (progress > 0) {
+      arcPath.setAttribute(
+        "d",
+        `M ${startX} ${startY} A ${r} ${r} 0 ${largeArcFlag} 1 ${px} ${py}`
+      );
+    }
+
+    // 更新指針與末端點座標
+    pointerLine.setAttribute("x2", px);
+    pointerLine.setAttribute("y2", py);
+    tipDot.setAttribute("cx", px);
+    tipDot.setAttribute("cy", py);
+
+    // 更新標籤數值與位置
+    const piVal = (progress * 2).toFixed(2);
+    label.textContent = `C ≈ ${piVal} π`;
+    label.style.left = `${px + 15}px`;
+    label.style.top = `${py - 20}px`;
+
+    if (progress < 1) {
+      requestAnimationFrame(animate);
+    } else {
+      label.textContent = "C = 2.00 π";
+      // 完成後指針淡出，留下一圈紅色的完整圓周與標籤
+      pointerLine.animate([{ opacity: 1 }, { opacity: 0 }], {
+        duration: 400,
+        fill: "forwards",
+      }).onfinish = () => pointerLine.remove();
+    }
+  }
+
+  requestAnimationFrame(animate);
 }
