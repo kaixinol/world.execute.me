@@ -889,3 +889,6 @@ html {
   opacity: 0;
   transition: opacity 0.2s ease;
 }
+.terminal-line {
+  font-size: 5.5vh;
+}

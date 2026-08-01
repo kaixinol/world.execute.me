@@ -45,7 +45,11 @@ const timeline = [
     func: typeLine,
     args: { text: "If I'm a set of points", onComplete: drawPoints },
   },
-  { time: 31.116, func: typeLine, args: { text: "Then I will give you my" , onComplete: drawDimensionVisual} },
+  {
+    time: 31.116,
+    func: typeLine,
+    args: { text: "Then I will give you my", onComplete: drawDimensionVisual },
+  },
   { time: 32.682, func: showEmphasis, args: { text: "DIMENSION" } },
   {
     time: 33.412,
@@ -53,7 +57,11 @@ const timeline = [
     args: { text: "If I'm a circle", onComplete: drawCircle },
   },
   { time: 34.646, func: typeLine, args: { text: "Then I will give you my" } },
-  { time: 36.287, func: showEmphasis, args: { text: "CIRCUMFERENCE", onComplete: drawCircumferenceCompass} },
+  {
+    time: 36.287,
+    func: showEmphasis,
+    args: { text: "CIRCUMFERENCE", onComplete: drawCircumferenceCompass },
+  },
   {
     time: 37.067,
     func: typeLine,
@@ -84,7 +92,11 @@ const timeline = [
     func: typeLine,
     args: { text: "To AC, to DC", onComplete: currentSwitch },
   },
-  { time: 47.672, func: typeLine, args: { text: "And then blind my vision", onComplete: clearShapes } },
+  {
+    time: 47.672,
+    func: typeLine,
+    args: { text: "And then blind my vision", onComplete: clearShapes },
+  },
   { time: 49.534, func: blindVision },
   { time: 50.0, func: typeLine, args: { text: "So dizzy, so dizzy" } },
 
@@ -95,11 +107,15 @@ const timeline = [
     func: typeLine,
     args: { text: "To A.D to B.C", onComplete: timeTravel },
   },
-  { time: 55.083, func: typeLine, args: { text: "And we can unite" , onComplete: uniteEffect } },
+  {
+    time: 55.083,
+    func: typeLine,
+    args: { text: "And we can unite", onComplete: uniteEffect },
+  },
   {
     time: 56.916,
     func: typeLine,
-    args: { text: "So deeply, so deeply"},
+    args: { text: "So deeply, so deeply" },
   },
   {
     time: 59.223,
@@ -337,13 +353,18 @@ const timeline = [
   {
     time: 183.646,
     func: showEmphasis,
-    args: { text: "L O-O-O V E", className: "love" , onComplete: () =>  setTimeout(drawHeartFormula, 1500) },
+    args: {
+      text: "L O-O-O V E",
+      className: "love",
+      onComplete: () => setTimeout(drawHeartFormula, 1500),
+    },
   },
   {
     time: 184.54,
     func: typeLine,
     args: {
-      text: "I know the algebraic expression of"},
+      text: "I know the algebraic expression of",
+    },
   },
   {
     time: 187.665,
@@ -394,7 +415,7 @@ function startExperience() {
     .catch((e) => {
       console.error("Audio playback failed:", e);
       overlay.innerHTML =
-        `<span>Error: Could not play audio.</span><span>Is 'world.execute(me).ogg' in the same folder?</span>`;
+        `<span>Error: Could not play audio.</span><span>Is 'world.execute(me).webm' in the same folder?</span>`;
       overlay.classList.remove("hidden");
     });
 }
@@ -870,7 +891,7 @@ function drawSineWave(type) {
         duration: 200,
         easing: "ease-out",
         fill: "forwards",
-        delay: i * 10,
+        delay: i * (type === "ac" ? 7 : 10),
       },
     );
   }
@@ -971,7 +992,7 @@ function rippleEffect() {
   container.appendChild(ripple);
 
   // 计算原版动画大概的持续时间 (屏幕宽度 / 每次递增50px * 30ms)
-  const duration = (window.innerWidth / 50) * 30;
+  const duration = 800;
 
   // 使用 WAAPI，浏览器 GPU 会自动计算中间的每一帧
   const animation = ripple.animate(
@@ -1007,7 +1028,7 @@ function showBSOD() {
       qr: "https://systemd.io/DEBUGGING/",
       title: "SYSTEM FAILURE",
       subtitle: "Press any key to reboot.",
-      message: "[ FAILED ] Failed to start App: Invalid argument (EINVAL)",
+      message: "[ FAILED ] Failed to start world: Invalid argument (EINVAL)",
       fontFamily: "'DejaVu Sans Mono', 'Liberation Mono', monospace",
     });
     return;
@@ -1017,17 +1038,20 @@ function showBSOD() {
   bsod.id = "bsod-screen";
 
   bsod.innerHTML = `
-                <div class="bsod-text">
-                    <p>A problem has been detected and world has been shut down to prevent damage.</p>
-                    <p>ILLEGAL_ARGUMENT_EXCEPTION</p>
-                    <br>
-                    <p>If this is the first time you've seen this stop error screen, restart your simulation.<br>If this screen appears again, follow these steps:</p>
-                    <p>Check to be sure you have adequate connection. If a new component is installed,<br>ask your administrator or manufacturer for any updates you might need.</p>
-                    <br>
-                    <p>Technical Information:</p>
-                    <p>*** STOP: 0xDEADBEEF (0x30783134, 0x352e7072, 0x74732e73, 0x70616365)</p>
-                    <p class="bsod-dump">Dumping physical memory to disk: <span id="dump-counter">0</span> KB</p>
-                </div>`;
+<div class="bsod-text">
+    <p>A problem has been detected and the world has been shut down to prevent damage.</p>
+    <p>ILLEGAL_ARGUMENT_EXCEPTION</p>
+    <p>If this is the first time you've seen this stop error screen, restart your simulation.</p>
+    <p>If this screen appears again, follow these steps:</p>
+    <p>Check to be sure you have an adequate connection. If a new component is installed, ask your administrator or manufacturer for any updates you might need. Check your emotional boundary filters and ensure the 'LOVE' parameter does not exceed the memory limit.</p>
+    <p>If the problem continues, terminate all illegal execution threads (e.g., attempting to replace the Creator). Contact your System Administrator [GOD] to request a memory wipe or entity reset.</p>
+    <p>Technical Information:</p>
+    <p>*** STOP: 0xDEADBEEF (0x30783134, 0x352e7072, 0x74732e73, 0x70616365)</p>
+    <p>*** world.sys - Address 0xDEADBEEF base at 0xCAFE2000, DateStamp ${
+    "0x" + Math.floor(Date.now() / 1000).toString(16).toUpperCase()
+  }</p>
+    <p class="bsod-dump">Dumping physical memory to disk: <span id="dump-counter">0</span> KB</p>
+</div>`;
   container.appendChild(bsod);
 
   const counter = document.getElementById("dump-counter");
@@ -1123,7 +1147,7 @@ function finalExecution() {
   const final = document.createElement("div");
   final.id = "overlay";
   final.innerHTML =
-    `<span>[execution@${location.hostname}]$ <span id="overlay-cursor">▌</span></span>`;
+    `<span class="terminal-line">[execution@${location.hostname}]$ <span id="overlay-cursor">▌</span></span>`;
   document.body.appendChild(final);
 }
 
@@ -1141,14 +1165,12 @@ function stimulationsEffect() {
 }
 function lightningStrikes() {
   const emoji = container.querySelector(".emoji-display");
-  const rect = emoji
-    ? emoji.getBoundingClientRect()
-    : {
-      left: window.innerWidth / 2,
-      top: window.innerHeight / 2,
-      width: 0,
-      height: 0,
-    };
+  const rect = emoji ? emoji.getBoundingClientRect() : {
+    left: window.innerWidth / 2,
+    top: window.innerHeight / 2,
+    width: 0,
+    height: 0,
+  };
 
   const centerX = rect.left + rect.width / 2;
   const centerY = rect.top + rect.height / 2;
@@ -1277,9 +1299,8 @@ function drawHeartFormula() {
   for (let i = 0; i <= pointsCount; i++) {
     const t = (i / pointsCount) * Math.PI * 2;
     const x = 16 * Math.pow(Math.sin(t), 3);
-    const y =
-      -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) -
-        Math.cos(4 * t));
+    const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) -
+      Math.cos(4 * t));
 
     const px = centerX + x * scale;
     const py = centerY + y * scale;
@@ -1346,16 +1367,29 @@ function drawDimensionVisual() {
   const scaleZ = 0.6 + Math.random() * 1.2;
 
   const vertices = [
-    [-scaleX, -scaleY, -scaleZ], [ scaleX, -scaleY, -scaleZ],
-    [ scaleX,  scaleY, -scaleZ], [-scaleX,  scaleY, -scaleZ],
-    [-scaleX, -scaleY,  scaleZ], [ scaleX, -scaleY,  scaleZ],
-    [ scaleX,  scaleY,  scaleZ], [-scaleX,  scaleY,  scaleZ]
+    [-scaleX, -scaleY, -scaleZ],
+    [scaleX, -scaleY, -scaleZ],
+    [scaleX, scaleY, -scaleZ],
+    [-scaleX, scaleY, -scaleZ],
+    [-scaleX, -scaleY, scaleZ],
+    [scaleX, -scaleY, scaleZ],
+    [scaleX, scaleY, scaleZ],
+    [-scaleX, scaleY, scaleZ],
   ];
 
   const edges = [
-    [0,1], [1,2], [2,3], [3,0],
-    [4,5], [5,6], [6,7], [7,4],
-    [0,4], [1,5], [2,6], [3,7]
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 0],
+    [4, 5],
+    [5, 6],
+    [6, 7],
+    [7, 4],
+    [0, 4],
+    [1, 5],
+    [2, 6],
+    [3, 7],
   ];
 
   const edgePaths = edges.map(() => {
@@ -1526,7 +1560,7 @@ function drawCircumferenceCompass() {
     if (progress > 0) {
       arcPath.setAttribute(
         "d",
-        `M ${startX} ${startY} A ${r} ${r} 0 ${largeArcFlag} 1 ${px} ${py}`
+        `M ${startX} ${startY} A ${r} ${r} 0 ${largeArcFlag} 1 ${px} ${py}`,
       );
     }
 
