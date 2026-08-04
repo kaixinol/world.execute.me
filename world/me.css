@@ -668,7 +668,7 @@ html {
   transform: translate(-50%, -50%);
   color: var(--love-color);
   font-weight: 700;
-  text-shadow: 0 0 8px var(--love-color);
+  text-shadow: none;
   pointer-events: none;
   white-space: nowrap;
   opacity: 0;
@@ -890,5 +890,5 @@ html {
   transition: opacity 0.2s ease;
 }
 .terminal-line {
-  font-size: 5.5vh;
+  font-size: 7.5vmin;
 }
