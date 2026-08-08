@@ -1115,9 +1115,9 @@ function executionSpamExtended({ duration }) {
     e.textContent = "EXECUTION";
     Object.assign(e.style, {
       position: "absolute",
-      left: `${Math.random() * 80}%`,
-      top: `${Math.random() * 70}%`,
-      transform: `rotate(${Math.random() * 40 - 20}deg)`,
+      left: `${20 + Math.random() * 60}%`,
+      top: `${20 + Math.random() * 60}%`,
+      transform: `translate(-50%, -50%) rotate(${Math.random() * 40 - 20}deg)`,
       animation: "none",
       textShadow: "0 0 10px var(--error-color)",
       zIndex: count % 3 === 0 ? 20 : 15,
@@ -1138,12 +1138,12 @@ function showChaosText({ text }) {
   e.className = "chaos-text";
   e.textContent = text;
   Object.assign(e.style, {
-    left: `${Math.random() * 80}%`,
-    top: `${Math.random() * 80}%`,
-    fontSize: `${Math.random() * 3 + 2}em`,
+    left: `${20 + Math.random() * 60}%`,
+    top: `${20 + Math.random() * 60}%`,
+    fontSize: `${Math.random() * 2.5 + 2}em`,
     color: `hsl(${Math.random() * 360}, 100%, 70%)`,
   });
-  visuals.appendChild(e);
+  container.appendChild(e);
   setTimeout(() => e.remove(), 500);
 }
 

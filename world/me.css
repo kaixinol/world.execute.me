@@ -440,15 +440,31 @@ html {
   position: absolute;
   font-family: var(--font-display);
   opacity: 0.8;
-  animation: fadeIn 0.2s;
+  animation: chaosFadeIn 0.2s ease-out forwards;
+  white-space: nowrap;
+  pointer-events: none;
+  line-height: 1;
+  z-index: 20;
+}
+@keyframes chaosFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  to {
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 .execution-spam {
+  position: absolute;
   overflow: hidden;
   max-width: calc(100vw - 2vw);
   pointer-events: none;
   font-size: clamp(1.5em, 5vw, 3.5em);
   letter-spacing: 2px;
   white-space: nowrap;
+  line-height: 1;
 }
 
 /* New effect styles */
