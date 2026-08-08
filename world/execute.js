@@ -4,6 +4,7 @@ const visuals = document.getElementById("visuals");
 const container = document.getElementById("container");
 
 const activeTypingIntervals = new Set();
+let activeTyping = null; // 当前正在打字的行：{ textSpan, cursor, text, i, intervalId, onComplete }
 const isUnixLike = /linux|mac|bsd|sunos|solaris|darwin/i.test(
   navigator.userAgent,
 );
@@ -440,6 +441,20 @@ overlay.addEventListener("click", startExperience, { once: true });
 
 // --- Visual Functions ---
 function typeLine({ text, className = "", style = {}, onComplete = null }) {
+  // 新行开始时，把上一行还没打完的剩余字符瞬间补全，避免歌词被截断
+  if (activeTyping) {
+    clearInterval(activeTyping.intervalId);
+    const prev = activeTyping;
+    activeTyping = null;
+    if (prev.i < prev.text.length) {
+      prev.textSpan.insertBefore(
+        document.createTextNode(prev.text.slice(prev.i)),
+        prev.cursor,
+      );
+    }
+    prev.cursor.classList.add("blink");
+    if (prev.onComplete) prev.onComplete();
+  }
   activeTypingIntervals.forEach((id) => clearInterval(id));
   activeTypingIntervals.clear();
   visuals.querySelectorAll(".cursor").forEach((c) => c.remove());
@@ -458,15 +473,18 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
     if (i < text.length) {
       textSpan.insertBefore(document.createTextNode(text.charAt(i)), cursor);
       i++;
+      if (activeTyping) activeTyping.i = i;
       visuals.scrollTop = visuals.scrollHeight;
     } else {
       clearInterval(typingInterval);
       activeTypingIntervals.delete(typingInterval);
       cursor.classList.add("blink");
       if (onComplete) onComplete();
+      if (activeTyping) activeTyping = null;
     }
   }, 60);
   activeTypingIntervals.add(typingInterval);
+  activeTyping = { textSpan, cursor, text, i, intervalId: typingInterval, onComplete };
 }
 
 function showEmphasis({ text, className = "", onComplete = null }) {
@@ -479,6 +497,10 @@ function showEmphasis({ text, className = "", onComplete = null }) {
 }
 
 function clearScreen() {
+  if (activeTyping) {
+    clearInterval(activeTyping.intervalId);
+    activeTyping = null;
+  }
   activeTypingIntervals.forEach((id) => clearInterval(id));
   activeTypingIntervals.clear();
   visuals.innerHTML = "";
