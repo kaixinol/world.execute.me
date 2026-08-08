@@ -415,7 +415,7 @@ function startExperience() {
     .catch((e) => {
       console.error("Audio playback failed:", e);
       overlay.innerHTML =
-        `<span>Error: Could not play audio.</span><span>Is 'world.execute(me).webm' in the same folder?</span>`;
+        `<span>Error: Could not play audio.</span><span>Is 'world.execute(me).webm' in the /static folder?</span>`;
       overlay.classList.remove("hidden");
     });
 }
@@ -1028,8 +1028,8 @@ function showBSOD() {
       qr: "https://systemd.io/DEBUGGING/",
       title: "SYSTEM FAILURE",
       subtitle: "Press any key to reboot.",
-      message: "[ FAILED ] Failed to start world: Invalid argument (EINVAL)",
-      fontFamily: "'DejaVu Sans Mono', 'Liberation Mono', monospace",
+      message: "Failed to start world: Invalid argument (EINVAL)",
+      fontFamily: "'IBM VGA', monospace",
     });
     return;
   }
