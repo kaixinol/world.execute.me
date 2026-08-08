@@ -688,7 +688,6 @@ html {
     max-width: none;
     font-size: clamp(0.8rem, 3.8vw, 0.95rem);
     font-weight: 700;
-    text-shadow: 0 0 10px var(--love-color), 0 0 4px var(--love-color);
   }
 }
 /* 结合动画容器 */
