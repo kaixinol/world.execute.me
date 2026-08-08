@@ -1249,10 +1249,9 @@ function fragmentsShatter() {
   const text = emphasisEl.textContent;
   emphasisEl.textContent = "";
 
-  // 1. 先把字符拆分好，按正常样式渲染出来
+  // 1. 拆分字符
   const spans = [...text].map((char) => {
     const span = document.createElement("span");
-    // 兼容空格，防止空字符折叠
     span.textContent = char === " " ? "\u00A0" : char;
     span.style.display = "inline-block";
     span.style.transition = "all 1.2s cubic-bezier(0.25, 1, 0.5, 1)";
@@ -1260,11 +1259,10 @@ function fragmentsShatter() {
     return span;
   });
 
-  // 2. 关键点：设置文字停留时间（毫秒）
-  // 建议 800ms ~ 1200ms，既能看清 "FRAGMENTS"，又不会显得卡顿
-  const HOLD_TIME = 800;
+  const HOLD_TIME = 800; // 停留看清时间
+  const FLY_TIME = 1200; // 飞散动画耗时
 
-  // 3. 停留结束后，再统一触发飞散崩塌
+  // 2. 800ms 后触发字符炸开飞散
   setTimeout(() => {
     spans.forEach((span) => {
       const x = (Math.random() - 0.5) * 300;
@@ -1275,15 +1273,22 @@ function fragmentsShatter() {
     });
   }, HOLD_TIME);
 
-  // 4. 所有字符的飞散 transition 结束后再移除整块 DOM，避免动画被截断
-  let pending = spans.length;
-  const onDone = () => {
-    pending--;
-    if (pending === 0) emphasisEl.remove();
-  };
-  spans.forEach((span) =>
-    span.addEventListener("transitionend", onDone, { once: true })
-  );
+  // 3. 飞散完毕后（800ms + 1200ms = 2000ms），平滑收缩容器高度再彻底删除
+  setTimeout(() => {
+    emphasisEl.animate([
+      { height: `${emphasisEl.offsetHeight}px`, opacity: 1 },
+      {
+        height: "0px",
+        opacity: 0,
+        marginTop: "0px",
+        marginBottom: "0px",
+        padding: "0px",
+      },
+    ], {
+      duration: 400,
+      easing: "ease-out",
+    }).onfinish = () => emphasisEl.remove();
+  }, HOLD_TIME + FLY_TIME);
 }
 function drawHeartFormula() {
   const width = container.clientWidth;
