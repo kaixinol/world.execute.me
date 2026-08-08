@@ -1274,6 +1274,16 @@ function fragmentsShatter() {
       span.style.opacity = "0";
     });
   }, HOLD_TIME);
+
+  // 4. 所有字符的飞散 transition 结束后再移除整块 DOM，避免动画被截断
+  let pending = spans.length;
+  const onDone = () => {
+    pending--;
+    if (pending === 0) emphasisEl.remove();
+  };
+  spans.forEach((span) =>
+    span.addEventListener("transitionend", onDone, { once: true })
+  );
 }
 function drawHeartFormula() {
   const width = container.clientWidth;
