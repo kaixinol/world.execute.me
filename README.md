@@ -13,6 +13,18 @@ Customize your playback starting point and visual theme by appending these param
 
 <https://kaixinol.github.io/world.execute.me/?jump=37&linux>
 
+## Development
+
+Serve the repo locally to debug the experience:
+
+```bash
+uvx --from rangehttpserver python -m RangeHTTPServer --bind localhost
+```
+
+Then open <http://localhost:8000/>. Append the URL parameters above to jump to a section, e.g. <http://localhost:8000/?jump=37>.
+
+**Why a Range-capable server?** The whole experience is timed to the audio track (`static/audio.webm`, ~2.6 MB). Seeking via `?jump=` sets `song.currentTime` (`execute.js`), which the browser performs with HTTP **Range** requests so only the needed byte range is fetched. Python's built-in `http.server` doesn't support Range — playback and `?jump=` would fail — hence `RangeHTTPServer`.
+
 ---
 
 ```java
