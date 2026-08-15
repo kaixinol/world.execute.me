@@ -440,8 +440,11 @@ function update() {
 overlay.addEventListener("click", startExperience, { once: true });
 
 // --- Visual Functions ---
+const DEFAULT_TYPING_INTERVAL = 60;
+const MIN_TYPING_INTERVAL = 20;
+
 function typeLine({ text, className = "", style = {}, onComplete = null }) {
-  // 新行开始时，把上一行还没打完的剩余字符瞬间补全，避免歌词被截断
+  // 兜底：新行开始时，若上一行仍未打完（极端情况），瞬间补全剩余字符避免歌词被截断
   if (activeTyping) {
     clearInterval(activeTyping.intervalId);
     const prev = activeTyping;
@@ -458,6 +461,25 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   activeTypingIntervals.forEach((id) => clearInterval(id));
   activeTypingIntervals.clear();
   visuals.querySelectorAll(".cursor").forEach((c) => c.remove());
+
+  // 提前检查：若本行按默认速度来不及在下一行开始前打完，则加快打字间隔
+  let interval = DEFAULT_TYPING_INTERVAL;
+  for (let k = currentIndex + 1; k < timeline.length; k++) {
+    if (timeline[k].func === typeLine) {
+      const nextTime = timeline[k].time;
+      const available = (nextTime - song.currentTime) * 1000;
+      if (available > 0) {
+        const required = available / text.length;
+        if (required < DEFAULT_TYPING_INTERVAL) {
+          interval = Math.max(required, MIN_TYPING_INTERVAL);
+          console.debug(
+            `typeLine: "<${text}>" 来不及在下一行(${nextTime.toFixed(3)}s)前打完，打字间隔 ${DEFAULT_TYPING_INTERVAL}ms → ${interval}ms`,
+          );
+        }
+      }
+      break;
+    }
+  }
 
   const line = document.createElement("div");
   line.className = `line ${className}`;
@@ -482,7 +504,7 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
       if (onComplete) onComplete();
       if (activeTyping) activeTyping = null;
     }
-  }, 60);
+  }, interval);
   activeTypingIntervals.add(typingInterval);
   activeTyping = { textSpan, cursor, text, i, intervalId: typingInterval, onComplete };
 }
