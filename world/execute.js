@@ -9,10 +9,17 @@ const isUnixLike = /linux|mac|bsd|sunos|solaris|darwin/i.test(
   navigator.userAgent,
 );
 let linuxBSOD = null;
-if (isUnixLike) {
-  import("https://cdn.jsdelivr.net/npm/linux-bsod/+esm").then((mod) => {
-    linuxBSOD = mod;
-  });
+let linuxBSODReady = Promise.resolve(null);
+if (isUnixLike || new URL(location.href).searchParams.has("linux")) {
+  linuxBSODReady = import("https://cdn.jsdelivr.net/npm/linux-bsod/+esm")
+    .then((mod) => {
+      linuxBSOD = mod;
+      return mod;
+    })
+    .catch((e) => {
+      console.error("Failed to load linux-bsod:", e);
+      return null;
+    });
 }
 
 const timeline = [
@@ -1063,19 +1070,19 @@ function showIsolation() {
   showEmphasis({ text: "ISOLATION", className: "error" });
 }
 
-function showBSOD() {
-  if (
-    (isUnixLike && linuxBSOD) ||
-    new URL(location.href).searchParams.has("linux")
-  ) {
-    window.__bsodUnmount = linuxBSOD.mountLinuxBSOD(container, {
-      qr: "https://systemd.io/DEBUGGING/",
-      title: "SYSTEM FAILURE",
-      subtitle: "Press any key to reboot.",
-      message: "Failed to start world: Invalid argument (EINVAL)",
-      fontUrl: "static/Web437_IBM_VGA_8x16.woff",
-    });
-    return;
+async function showBSOD() {
+  if (isUnixLike || new URL(location.href).searchParams.has("linux")) {
+    const mod = await linuxBSODReady;
+    if (mod) {
+      window.__bsodUnmount = mod.mountLinuxBSOD(container, {
+        qr: "https://systemd.io/DEBUGGING/",
+        title: "SYSTEM FAILURE",
+        subtitle: "Press any key to reboot.",
+        message: "Failed to start world: Invalid argument (EINVAL)",
+        fontUrl: "static/Web437_IBM_VGA_8x16.woff",
+      });
+      return;
+    }
   }
 
   const bsod = document.createElement("div");
@@ -1111,11 +1118,14 @@ function showBSOD() {
     counter.textContent = current.toLocaleString();
   }, Math.random() * 2000 + 3000);
 }
-function hideBSOD() {
-  if (isUnixLike && window.__bsodUnmount) {
-    window.__bsodUnmount();
-    window.__bsodUnmount = null;
-    return;
+async function hideBSOD() {
+  if (isUnixLike || new URL(location.href).searchParams.has("linux")) {
+    await linuxBSODReady;
+    if (window.__bsodUnmount) {
+      window.__bsodUnmount();
+      window.__bsodUnmount = null;
+      return;
+    }
   }
   const bsod = document.getElementById("bsod-screen");
   if (bsod) {
