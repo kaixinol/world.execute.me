@@ -94,11 +94,18 @@ const timeline = [
   { time: 43.507, func: showEmphasis, args: { text: "LIMITATIONS" } },
   { time: 44.2, func: clearScreenAndShapes },
   // Enhanced AC/DC section
-  { time: 44.452, func: typeLine, args: { text: "Switch my current" } },
+  {
+    time: 44.452,
+    func: typeLine,
+    args: {
+      text: "Switch my current",
+      onComplete: () => setTimeout(currentSwitch, 500),
+    },
+  },
   {
     time: 45.50,
     func: typeLine,
-    args: { text: "To AC, to DC", onComplete: currentSwitch },
+    args: { text: "To AC, to DC" },
   },
   {
     time: 47.672,
@@ -109,11 +116,18 @@ const timeline = [
   { time: 50.0, func: typeLine, args: { text: "So dizzy, so dizzy" } },
 
   // Enhanced travel section
-  { time: 51.363, func: typeLine, args: { text: "Oh we can travel" } },
+  {
+    time: 51.363,
+    func: typeLine,
+    args: {
+      text: "Oh we can travel",
+      onComplete: () => setTimeout(timeTravel, 700),
+    },
+  },
   {
     time: 53.225,
     func: typeLine,
-    args: { text: "To A.D to B.C", onComplete: timeTravel },
+    args: { text: "To A.D to B.C" },
   },
   {
     time: 55.083,
@@ -202,23 +216,23 @@ const timeline = [
   { time: 87.922, func: showEmphasis, args: { text: "EXISTENCE" } },
 
   // Enhanced gender/role switch section
-  { time: 88.587, func: typeLine, args: { text: "Switch my gender" } },
+  { time: 88.587, func: typeLine, args: { text: "Switch my gender" , onComplete:  () => setTimeout(genderSwitch, 500)} },
   {
     time: 90.197,
     func: typeLine,
-    args: { text: "To F, to M", onComplete: genderSwitch },
+    args: { text: "To F, to M" },
   },
-  { time: 92.015, func: typeLine, args: { text: "And then do whatever" } },
+  { time: 92.015, func: typeLine, args: { text: "And then do whatever" , onComplete: () => setTimeout(showTimeDisplay, 300) } },
   {
     time: 93.953,
     func: typeLine,
-    args: { text: "From AM to PM", onComplete: showTimeDisplay },
+    args: { text: "From AM to PM"},
   },
-  { time: 95.465, func: typeLine, args: { text: "Oh switch my role" } },
+  { time: 95.465, func: typeLine, args: { text: "Oh switch my role" , onComplete: () => setTimeout(roleSwitch, 700)} },
   {
     time: 97.739,
     func: typeLine,
-    args: { text: "To S, to M", onComplete: roleSwitch },
+    args: { text: "To S, to M" },
   },
   { time: 99.349, func: typeLine, args: { text: "So we can enter" } },
   {
@@ -449,6 +463,7 @@ overlay.addEventListener("click", startExperience, { once: true });
 // --- Visual Functions ---
 const DEFAULT_TYPING_INTERVAL = 60;
 const MIN_TYPING_INTERVAL = 20;
+const MAX_TYPING_INTERVAL = 100;
 
 function typeLine({ text, className = "", style = {}, onComplete = null }) {
   // 兜底：新行开始时，若上一行仍未打完（极端情况），瞬间补全剩余字符避免歌词被截断
@@ -469,23 +484,30 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
   activeTypingIntervals.clear();
   visuals.querySelectorAll(".cursor").forEach((c) => c.remove());
 
-  // 提前检查：若本行按默认速度来不及在下一行开始前打完，则加快打字间隔
+  // 提前检查：若本行按默认速度来不及在紧邻下一项开始前打完，则加快打字间隔；
+  // 若会过早打完，则减慢打字间隔来贴近节奏。
+  // 带 onComplete 的行在打完时触发效果，同样参与调速以便与下一项衔接
   let interval = DEFAULT_TYPING_INTERVAL;
-  for (let k = currentIndex + 1; k < timeline.length; k++) {
-    if (timeline[k].func === typeLine) {
-      const nextTime = timeline[k].time;
-      const available = (nextTime - song.currentTime) * 1000;
-      if (available > 0) {
-        const required = available / text.length;
-        if (required < DEFAULT_TYPING_INTERVAL) {
-          interval = Math.max(required, MIN_TYPING_INTERVAL);
-          console.debug(
-            `typeLine: "<${text}>" 来不及在下一行(${nextTime.toFixed(3)}s)前打完，打字间隔 ${DEFAULT_TYPING_INTERVAL}ms → ${interval}ms`,
-          );
-        }
+  const next = timeline[currentIndex + 1];
+  if (next) {
+    const nextTime = next.time;
+    const available = (nextTime - song.currentTime) * 1000;
+    if (available > 0) {
+      const required = available / text.length;
+      if (required < DEFAULT_TYPING_INTERVAL) {
+        interval = Math.max(required, MIN_TYPING_INTERVAL);
+      } else if (required > DEFAULT_TYPING_INTERVAL) {
+        interval = Math.max(
+          DEFAULT_TYPING_INTERVAL,
+          Math.min(required * 0.85, MAX_TYPING_INTERVAL),
+        );
       }
-      break;
     }
+  }
+  if (interval !== DEFAULT_TYPING_INTERVAL) {
+    console.debug(
+      `typeLine: "<${text}>" 打字间隔 ${DEFAULT_TYPING_INTERVAL}ms → ${interval}ms`,
+    );
   }
 
   const line = document.createElement("div");
@@ -513,7 +535,14 @@ function typeLine({ text, className = "", style = {}, onComplete = null }) {
     }
   }, interval);
   activeTypingIntervals.add(typingInterval);
-  activeTyping = { textSpan, cursor, text, i, intervalId: typingInterval, onComplete };
+  activeTyping = {
+    textSpan,
+    cursor,
+    text,
+    i,
+    intervalId: typingInterval,
+    onComplete,
+  };
 }
 
 function showEmphasis({ text, className = "", onComplete = null }) {
