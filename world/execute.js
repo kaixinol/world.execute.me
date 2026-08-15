@@ -1073,7 +1073,7 @@ function showBSOD() {
       title: "SYSTEM FAILURE",
       subtitle: "Press any key to reboot.",
       message: "Failed to start world: Invalid argument (EINVAL)",
-      fontFamily: "'IBM VGA', monospace",
+      fontUrl: "static/Web437_IBM_VGA_8x16.woff",
     });
     return;
   }
