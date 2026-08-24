@@ -846,7 +846,7 @@ function showCodeSnippet() {
   el.className = "code-snippet";
   el.innerHTML = `> OBJECT CREATION...
 <code><span class="token keyword">class</span> <span class="token class-name">Me</span> {
-  <span class="token function">constructor</span>(<span class="token parameter"><span class="token string">'you'</span></span>) {
+  <span class="token function">constructor</span>(<span class="token parameter"></span>) {
     <span class="token keyword">this</span>.<span class="token property">world</span> = <span class="token string">'you'</span>;
     <span class="token keyword">this</span>.<span class="token property">existence</span> = <span class="token keyword">new</span> <span class="token class-name">Promise</span>(...);
   }
